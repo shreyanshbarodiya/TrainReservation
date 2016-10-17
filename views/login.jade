@@ -8,7 +8,7 @@ block content
                     div.panel-title Sign In
                 div.panel-body(style="padding-top:30px")
                     div.alert.alert-danger.col-sm-12#login-alert(style="display:none;")
-                    form(id='loginform',class='form-horizontal',role='form')
+                    form(id='login-form',class='form-horizontal',role='form', action='/login', method='post')
                         div.input-group(style="margin-bottom: 25px")
                             span.input-group-addon
                                 i.glyphicon.glyphicon-user
@@ -19,7 +19,7 @@ block content
                             input.form-control(id='login-password',type='password',name='password',placeholder='Password')
                         div.form-group(style="margin-top:10px")
                             .col-sm-12.controls
-                                a.btn.btn-success#btn-login Login
+                                button.btn.btn-success(id='btn-login',type='submit',form='login-form',value='Submit') Login
 
                         div.form-group
                             .col-md-12.control
@@ -35,27 +35,27 @@ block content
                         a#signinlink(href='#',onclick="$('#signupbox').hide(); $('#loginbox').show()") Sign in
                 .panel-body(style="padding-top:30px")
                     div.alert.alert-danger.col-sm-12#signup-alert(style="display:none;")
-                    form(id='signupform',class='form-horizontal',role='form')
+                    form(id='signup-form',class='form-horizontal',role='form')
                         div.form-group
-                            label.col-md-3.control-label(for="username") User ID
+                            label.col-md-3.control-label(for="signup-username") User ID
                             .col-md-9
-                                input.form-control(type="text", name="username", placeholder="User ID")
+                                input.form-control(type="text",id='signup-username', name="username", placeholder="User ID")
                         div.form-group
-                            label.col-md-3.control-label(for="firstname") First Name
+                            label.col-md-3.control-label(for="signup-firstname") First Name
                             .col-md-9
-                                input.form-control(type="text", name="firstname", placeholder="First Name")
+                                input.form-control(type="text",id='signup-firstname', name="firstname", placeholder="First Name")
                         div.form-group
-                            label.col-md-3.control-label(for="lastname") Last Name
+                            label.col-md-3.control-label(for="signup-lastname") Last Name
                             .col-md-9
-                                input.form-control(type="text", name="lastname", placeholder="Last Name")
+                                input.form-control(type="text",id='signup-lastname', name="lastname", placeholder="Last Name")
                         div.form-group
-                            label.col-md-3.control-label(for="mobile") Mobile No.
+                            label.col-md-3.control-label(for="signup-mobile") Mobile No.
                             .col-md-9
-                                input.form-control(type="tel", name="mobile", placeholder="Mobile No.")
+                                input.form-control(type="tel",id='signup-mobile', name="mobile", placeholder="Mobile No.")
                         div.form-group
-                            label.col-md-3.control-label(for="password") Password
+                            label.col-md-3.control-label(for="signup-password") Password
                             .col-md-9
-                                input.form-control(type="password", name="password", placeholder="Password")
+                                input.form-control(type="password",id='signup-password', name="password", placeholder="Password")
                         div.form-group(style="border-top: 1px solid #999; padding-top:20px")
                             .col-md-offset-3.col-md-9
                                 button.btn.btn-info#btn-signup Sign Up
