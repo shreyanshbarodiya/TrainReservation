@@ -29,26 +29,28 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(flash());
 
 // set up passport
 app.use(session({secret : 'dgfshdfghjdsvjsdvhvgjbvs', resave: false,  saveUninitialized: true}));
-
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
 passport.use(new LocalStrategy(
-    {
-      usernameField : 'username',
-      passwordField : 'password'
-    },
-    function (username, password, done) {
-      models.User.findByPrimary(username).then(function (user) {
-        if(!user || !passwordHash.verify(password, user.password))
-          return done(null, false, {message : "Incorrect email or password"});
-        return done(null, user);
-      })
-    }
+  {
+    usernameField : 'username',
+    passwordField : 'password'
+  },
+  function (username, password, done) {
+    models.User.findByPrimary(username).then(function (user) {
+      if(!user)
+        return done(null, false, {message : "Incorrect username"});
+      if(!passwordHash.verify(password, user.password))
+        return done(null, false, {message : "Incorrect password"});
+
+      return done(null, user);
+    })
+  }
 ));
 
 passport.serializeUser(function(user, done) {
@@ -66,24 +68,45 @@ passport.deserializeUser(function(username, done) {
 // passport set up done
 
 app.all('*', function(req,res,next) {
-  if (req.path === '/login')
+  if (req.path === '/login' || req.path === '/signup')
     next();
   else
     ensureAuthenticated(req,res,next);
 });
 
-app.post('/login', passport.authenticate('local', { failureRedirect: '/login', successRedirect: '/'}));
+app.post('/login', passport.authenticate('local',
+  { failureRedirect: '/login',
+    successRedirect: '/',
+    failureFlash: true
+  }
+));
 
 app.get('/login', function(req, res) {
   if (req.isAuthenticated())
     res.redirect('/');
 
-  res.render('login', {title: "Login"});
+  res.render('login', {title: "Login", loginerrmsg: req.flash('error'), signuperrmsg: req.flash('signup_error')});
 });
 
 app.get('/logout', function (req, res){
   req.logOut();
   res.redirect('/login');
+});
+
+app.post('/signup', function (req, res) {
+  models.User.findOrCreate({where: {username: req.body.username},
+    defaults: {
+      name: req.body.first + ' ' + req.body.last,
+      password: passwordHash.generate(req.body.password),
+      ph_no: req.body.ph_no,
+      balance: 0
+    }})
+    .spread(function (user, created) {
+      if(created)
+        res.redirect('/');
+      else
+        req.flash('signup_error', 'This username is taken');
+    })
 });
 
 app.use('/', routes);

@@ -7,7 +7,7 @@ block content
                 .panel-heading
                     div.panel-title Sign In
                 div.panel-body(style="padding-top:30px")
-                    if locals.loginerrmsg
+                    if locals.loginerrmsg && locals.loginerrmsg!=''
                         div.alert.alert-danger.col-sm-12#login-alert
                             p= loginerrmsg
                     form(id='login-form',class='form-horizontal',role='form', action='/login', method='post')
@@ -36,30 +36,30 @@ block content
                     div(style="float:right; font-size: 85%; position: relative; top:-10px")
                         a#signinlink(href='#',onclick="$('#signupbox').hide(); $('#loginbox').show()") Sign in
                 .panel-body(style="padding-top:30px")
-                    if locals.signuperrmsg
+                    if locals.signuperrmsg && locals.signuperrmsg!=''
                         div.alert.alert-danger.col-sm-12#signup-alert
                             p= signuperrmsg
-                    form(id='signup-form',class='form-horizontal',role='form')
+                    form(id='signup-form',class='form-horizontal',role='form', action='/signup', method='POST')
                         div.form-group
                             label.col-md-3.control-label(for="signup-username") User ID
                             .col-md-9
-                                input.form-control(type="text",id='signup-username', name="username", placeholder="User ID")
+                                input.form-control(type="text",id='signup-username', name="username", placeholder="User ID", required=true)
                         div.form-group
                             label.col-md-3.control-label(for="signup-firstname") First Name
                             .col-md-9
-                                input.form-control(type="text",id='signup-firstname', name="firstname", placeholder="First Name")
+                                input.form-control(type="text",id='signup-firstname', name="firstname", placeholder="First Name", required=true)
                         div.form-group
                             label.col-md-3.control-label(for="signup-lastname") Last Name
                             .col-md-9
-                                input.form-control(type="text",id='signup-lastname', name="lastname", placeholder="Last Name")
+                                input.form-control(type="text",id='signup-lastname', name="lastname", placeholder="Last Name", required=true)
                         div.form-group
                             label.col-md-3.control-label(for="signup-mobile") Mobile No.
                             .col-md-9
-                                input.form-control(type="tel",id='signup-mobile', name="mobile", placeholder="Mobile No.")
+                                input.form-control(type="tel",id='signup-mobile', name="mobile", placeholder="Mobile No.", required=true)
                         div.form-group
                             label.col-md-3.control-label(for="signup-password") Password
                             .col-md-9
-                                input.form-control(type="password",id='signup-password', name="password", placeholder="Password")
+                                input.form-control(type="password",id='signup-password', name="password", placeholder="Password", required=true)
                         div.form-group(style="border-top: 1px solid #999; padding-top:20px")
                             .col-md-offset-3.col-md-9
-                                button.btn.btn-info#btn-signup Sign Up
+                                button.btn.btn-info(id='btn-signup',type='submit',form='signup-form',value='Submit') Sign Up
