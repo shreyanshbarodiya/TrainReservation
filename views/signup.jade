@@ -1,0 +1,41 @@
+//
+   Created by Gaurav on 18-10-2016.
+extends layout
+
+block content
+    .container
+        div.mainbox.col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2#signupbox(style='margin-top:50px;')
+            .panel.panel-info
+                .panel-heading
+                    div.panel-title Sign Up
+                    div(style="float:right; font-size: 85%; position: relative; top:-10px")
+                        a#signinlink(href='login/') Sign in
+                .panel-body(style="padding-top:30px")
+                    if locals.signuperrmsg && locals.signuperrmsg!=''
+                        div.alert.alert-danger.col-sm-12#signup-alert
+                            p= signuperrmsg
+                    form(id='signup-form',class='form-horizontal',role='form', action='/signup', method='POST')
+                        div.form-group
+                            label.col-md-3.control-label(for="signup-username") User ID
+                            .col-md-9
+                                input.form-control(type="text",id='signup-username', name="username", placeholder="User ID", required=true)
+                        div.form-group
+                            label.col-md-3.control-label(for="signup-firstname") First Name
+                            .col-md-9
+                                input.form-control(type="text",id='signup-firstname', name="firstname", placeholder="First Name", required=true)
+                        div.form-group
+                            label.col-md-3.control-label(for="signup-lastname") Last Name
+                            .col-md-9
+                                input.form-control(type="text",id='signup-lastname', name="lastname", placeholder="Last Name", required=true)
+                        div.form-group
+                            label.col-md-3.control-label(for="signup-mobile") Mobile No.
+                            .col-md-9
+                                input.form-control(type="tel",id='signup-mobile', name="mobile", placeholder="Mobile No.", required=true)
+                        div.form-group
+                            label.col-md-3.control-label(for="signup-password") Password
+                            .col-md-9
+                                input.form-control(type="password",id='signup-password', name="password", placeholder="Password", required=true)
+                        div.form-group(style="border-top: 1px solid #999; padding-top:20px")
+                            .col-md-offset-3.col-md-9
+                                button.btn.btn-info#btn-signup Sign Up
+
