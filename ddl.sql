@@ -34,7 +34,7 @@ create table "user"
 
 create table runs_on
 	(train_no				varchar(5),
-	 day_of_week			small int check (day_of_week in(0,1,2,3,4,5,6)),
+	 day_of_week		SMALLINT check (day_of_week in(0,1,2,3,4,5,6)),
 	 primary key (train_no, day_of_week),
 	 foreign key (train_no) references train(train_no) on delete cascade
 	);
