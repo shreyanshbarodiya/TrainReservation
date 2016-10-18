@@ -15,6 +15,7 @@ var models = require('./models');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var pnr = require('./routes/pnr');
 
 var app = express();
 
@@ -95,7 +96,7 @@ passport.deserializeUser(function(username, done) {
 // passport set up done
 
 app.all('*', function(req,res,next) {
-  if (req.path === '/login' || req.path === '/signup')
+  if (req.path === '/login' || req.path === '/signup' || req.path === '/pnr')
     next();
   else
     ensureAuthenticated(req,res,next);
@@ -136,6 +137,7 @@ app.get('/logout', function (req, res){
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/pnr',pnr);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
