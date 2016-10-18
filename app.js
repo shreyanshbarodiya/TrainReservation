@@ -39,15 +39,17 @@ app.use(passport.session());
 passport.use('local-login', new LocalStrategy(
   {
     usernameField : 'username',
-    passwordField : 'password'
+    passwordField : 'password',
+    passReqToCallback : true
   },
-  function (username, password, done) {
+  function (req, username, password, done) {
     models.User.findByPrimary(username).then(function (user) {
       if(!user)
         return done(null, false, {message : "Incorrect username"});
       if(!passwordHash.verify(password, user.password))
         return done(null, false, {message : "Incorrect password"});
 
+      req.flash('name', user.name);
       return done(null, user);
     })
   }
@@ -68,8 +70,10 @@ passport.use('local-signup', new LocalStrategy(
         balance: 0
       }})
       .spread(function (user, created) {
-        if(created)
+        if(created) {
+          req.flash('name', user.name);
           return done(null, user);
+        }
         else
           return done(null, false, {message : "This username is taken"});
       })
@@ -108,7 +112,7 @@ app.get('/login', function(req, res) {
   if (req.isAuthenticated())
     res.redirect('/');
 
-  res.render('login', {title: "Login", loginerrmsg: req.flash('error'), signuperrmsg: req.flash('signup_error')});
+  res.render('login', {title: "Login", loginerrmsg: req.flash('error')});
 });
 
 app.post('/signup', passport.authenticate('local-signup',
