@@ -26,7 +26,7 @@ app.set('view engine', 'jade');
 app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -36,7 +36,7 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(new LocalStrategy(
+passport.use('local-login', new LocalStrategy(
   {
     usernameField : 'username',
     passwordField : 'password'
@@ -50,6 +50,29 @@ passport.use(new LocalStrategy(
 
       return done(null, user);
     })
+  }
+));
+
+passport.use('local-signup', new LocalStrategy(
+  {
+    usernameField : 'username',
+    passwordField : 'password',
+    passReqToCallback: true
+  },
+  function (req, username, password, done) {
+    models.User.findOrCreate({where: {username: username},
+      defaults: {
+        name: req.body.firstname + ' ' + req.body.lastname,
+        password: passwordHash.generate(password),
+        ph_no: req.body.mobile,
+        balance: 0
+      }})
+      .spread(function (user, created) {
+        if(created)
+          return done(null, user);
+        else
+          return done(null, false, {message : "This username is taken"});
+      })
   }
 ));
 
@@ -74,7 +97,7 @@ app.all('*', function(req,res,next) {
     ensureAuthenticated(req,res,next);
 });
 
-app.post('/login', passport.authenticate('local',
+app.post('/login', passport.authenticate('local-login',
   { failureRedirect: '/login',
     successRedirect: '/',
     failureFlash: true
@@ -88,25 +111,23 @@ app.get('/login', function(req, res) {
   res.render('login', {title: "Login", loginerrmsg: req.flash('error'), signuperrmsg: req.flash('signup_error')});
 });
 
+app.post('/signup', passport.authenticate('local-signup',
+  { failureRedirect: '/signup',
+    successRedirect: '/',
+    failureFlash: true
+  }
+));
+
+app.get('/signup', function(req, res) {
+  if (req.isAuthenticated())
+    res.redirect('/');
+
+  res.render('signup', {title: "Signup", signuperrmsg: req.flash('error')});
+});
+
 app.get('/logout', function (req, res){
   req.logOut();
   res.redirect('/login');
-});
-
-app.post('/signup', function (req, res) {
-  models.User.findOrCreate({where: {username: req.body.username},
-    defaults: {
-      name: req.body.first + ' ' + req.body.last,
-      password: passwordHash.generate(req.body.password),
-      ph_no: req.body.ph_no,
-      balance: 0
-    }})
-    .spread(function (user, created) {
-      if(created)
-        res.redirect('/');
-      else
-        req.flash('signup_error', 'This username is taken');
-    })
 });
 
 app.use('/', routes);
