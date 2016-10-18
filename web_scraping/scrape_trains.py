@@ -40,7 +40,7 @@ port = 5200
 
 #stored as {<coach_class> : [num_coaches, coach_code, capacity]}
 coach_info = {'1A':[1,'H',18], '2A':[2,'A',48], '3A':[4,'B',64], 'SL':[10,'S',72], 'CC':[3,'C',67], '2S':[4,'D',108]}
-
+day_of_week = {'M':1, 'T':2, 'W':3, 'Th':4, 'F':5, 'Sa':6, 'Su':0}
 import psycopg2
 myConnection = psycopg2.connect( host=hostname, user=username, password=password, dbname=database, port=port)
 cur = myConnection.cursor()
@@ -128,7 +128,7 @@ for i in range(1,5):
 		li.small.extract()
 		days = str(li.text).strip().split(', ')
 		for day in days:
-			query = "INSERT INTO runs_on VALUES('{}','{}');".format(train['trnno'], day)
+			query = "INSERT INTO runs_on VALUES('{}','{}');".format(train['trnno'], day_of_week.get(day))
 			try:
 				cur.execute(query)
 				print(query)
