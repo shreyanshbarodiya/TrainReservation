@@ -7,7 +7,7 @@ var router = express.Router();
 var models = require('../models');
 
 router.post('/credit', function (req, res) {
-	models.User.find({where: {username: req.flash('id')}}).then(function(user){
+	models.User.find({where: {username: req.user.username}}).then(function (user) {
 		user.balance = user.balance + req.body.add_amt;
 		user.save()
 			.then(function (savedUser) {
@@ -15,7 +15,7 @@ router.post('/credit', function (req, res) {
 			})
 			.catch(function (error) {
 				res.json({status: 'ERROR', data: error});
-		})
+			})
 	});
 });
 
