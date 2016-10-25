@@ -6,6 +6,7 @@ html
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+    script(src='/navbar-active.js')
   body
     block navbar
       nav.navbar.navbar-inverse
@@ -14,7 +15,7 @@ html
           .navbar-header
             a.navbar-brand(href='/') Train Reservation Portal
           ul.nav.navbar-nav
-            li.active
+            li
               a(href="/") Home
             li
               a(href="/pnr") PNR Status
