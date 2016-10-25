@@ -18,6 +18,7 @@ var users = require('./routes/users');
 var pnr = require('./routes/pnr');
 var signup = require('./routes/signup');
 var login = require('./routes/login');
+var station = require('./routes/station');
 
 var app = express();
 
@@ -96,10 +97,12 @@ passport.deserializeUser(function(username, done) {
 });
 
 // passport set up done
-
+var publicPaths = ['/login', '/signup', '/pnr', '/station/autocomplete'];
 app.all('*', function(req,res,next) {
-  if (req.path === '/login' || req.path === '/signup' || req.path === '/pnr')
-    next();
+  if (publicPaths.indexOf(req.path) >= 0) {
+      console.log(req.path);
+      next();
+  }
   else
     ensureAuthenticated(req,res,next);
 });
@@ -114,6 +117,7 @@ app.use('/users', users);
 app.use('/pnr',pnr);
 app.use('/signup', signup);
 app.use('/login', login);
+app.use('/station', station);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
