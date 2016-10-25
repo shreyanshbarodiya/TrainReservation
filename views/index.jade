@@ -2,6 +2,11 @@ extends layout
 
 append navbar-contents
       ul.nav.navbar-nav.navbar-right
+        if locals.balance
+          li
+            a(href="#",data-toggle="modal",data-target="#add-money-modal")
+              span.glyphicon.glyphicon-piggy-bank
+              text &nbsp &#x20B9; {#balance}
         li
           a(href="logout")
             span.glyphicon.glyphicon-log-in
@@ -28,13 +33,41 @@ block content
               div.form-group
                 label.col-md-3.control-label(for="search-date") Journey Date
                 .col-md-9
-                  input.form-control(type="date",id='search-date', name="search-date", placeholder="Date dd-mm-yyyy")
-              div.form-group(style="border-top: 1px solid #999; padding-top:20px")
+                  input.form-control(type="date",id='search-date', name="search-date")
+              div.form-group
                 .col-md-offset-3.col-md-9
                   button.btn.btn-primary#btn-search Search
       block home
       .col-lg-9
         h2 Welcome #{name}
+        table.table.table-hover(style="margin-top:5%")
+          tr
+            td
+              a(href='#')
+                h3 Cancel Ticket
+            td
+              a(href='#')
+                h3 Booked Ticket History
+          tr
+            td
+              a(href='#')
+                h3 Check PNR Status
+            td
+              a(href='#',data-toggle="modal",data-target="#add-money-modal")
+                h3 Add money to wallet
 
-
-
+    //Modal for add money to wallet
+    .modal.fade#add-money-modal(role="dialog")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button(type="button", class="close", data-dismiss="modal") &times;
+            h4.modal-title Add Money to Wallet
+          .modal-body
+            form(id='add-money-form',class='form-inline',role='form')
+              div.form-group
+                label(for="add-amt") Enter amount(&#x20B9;):
+                input.form-control(type="number",id='add-amt', name="add-amt", placeholder="Amount")
+              button.btn.btn-primary#btn-add-money Submit
+          .modal-footer
+            button(type="button", class="btn btn-default", data-dismiss="modal") Close
