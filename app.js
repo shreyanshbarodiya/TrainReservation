@@ -19,6 +19,7 @@ var pnr = require('./routes/pnr');
 var signup = require('./routes/signup');
 var login = require('./routes/login');
 var station = require('./routes/station');
+var wallet = require('./routes/wallet');
 
 var app = express();
 
@@ -54,6 +55,7 @@ passport.use('local-login', new LocalStrategy(
         return done(null, false, {message : "Incorrect password"});
 
       req.flash('name', user.name);
+			req.flash('id', user.username);
       return done(null, user);
     })
   }
@@ -75,6 +77,7 @@ passport.use('local-signup', new LocalStrategy(
       }})
       .spread(function (user, created) {
         if(created) {
+					req.flash('id', user.username);
           req.flash('name', user.name);
           return done(null, user);
         }
@@ -117,6 +120,7 @@ app.use('/users', users);
 app.use('/pnr',pnr);
 app.use('/signup', signup);
 app.use('/login', login);
+app.use('/wallet', wallet);
 app.use('/station', station);
 
 // catch 404 and forward to error handler
