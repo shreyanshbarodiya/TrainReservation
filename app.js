@@ -97,16 +97,16 @@ passport.deserializeUser(function (user, done) {
 /* All public routes */
 app.use('/pnr', pnr);
 app.use('/signup', signup);
+app.use('/search_trains', search_trains);
+
 app.use('/login', login);
-
 /* Authentication middleware*/
-app.use(ensureAuthenticated);
 
+app.use(ensureAuthenticated);
 /* All private routes below */
 app.use('/', routes);
 app.use('/users', users);
 app.use('/station', station);
-app.use('/search_trains', search_trains);
 app.use('/wallet', wallet);
 
 app.get('/logout', function (req, res) {

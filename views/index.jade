@@ -5,6 +5,27 @@ append head
   script(src="https://code.jquery.com/jquery-1.12.4.js")
   script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
   script(src="/js/autocomplete.js")
+  script.
+    $ (function () {
+      $("#add-money-form").submit(function (e) {
+        var url = "/wallet/credit"; // the script where you handle the form input.
+        $.ajax({
+          type: "POST",
+          url: url,
+          data: $("#add-money-form").serialize()}) // serializes the form's elements.
+                .success( function (data) {
+                  alert('Successfully added amount to wallet!'); // show response from the php script.
+                })
+                .error(function (error, status) {
+                  alert('Failed to add money!');
+                })
+              .then(function () {
+                $('#close-modal').trigger('click');
+              });
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+      });
+    });
+
 
 append navbar-contents
       ul.nav.navbar-nav.navbar-right
@@ -67,10 +88,10 @@ block content
       .modal-dialog
         .modal-content
           .modal-header
-            button(type="button", class="close", data-dismiss="modal") &times;
+            button#close-modal(type="button", class="close", data-dismiss="modal") &times;
             h4.modal-title Add Money to Wallet
           .modal-body
-            form(id='add-money-form',class='form-inline',role='form', action='/wallet/credit', method='POST')
+            form(id='add-money-form',class='form-inline',role='form',action='#')
               div.form-group
                 label(for="add-amt") Enter amount(&#x20B9;):
                 input.form-control(type="number",id='add-amt', name="add_amt", placeholder="Amount")
