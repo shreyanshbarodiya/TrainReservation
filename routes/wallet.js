@@ -8,7 +8,7 @@ var models = require('../models');
 
 router.post('/credit', function (req, res) {
 	models.User.find({where: {username: req.user.username}}).then(function (user) {
-		user.balance = user.balance + req.body.add_amt;
+		user.balance = user.balance + parseInt(req.body.add_amt, 10);
 		user.save()
 			.then(function (savedUser) {
 				res.json({status: 'SUCCESS', data: savedUser.balance});
