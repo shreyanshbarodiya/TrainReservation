@@ -55,7 +55,7 @@ passport.use('local-login', new LocalStrategy(
 			if (!passwordHash.verify(password, user.password))
 				return done(null, false, {message: "Incorrect password"});
 
-			return done(null, {username : user.username, name: user.name});
+			return done(null, {username : user.username, name: user.name, balance: user.balance});
 		})
 	}
 ));
