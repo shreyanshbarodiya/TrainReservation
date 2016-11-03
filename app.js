@@ -77,7 +77,7 @@ passport.use('local-signup', new LocalStrategy(
 		})
 			.spread(function (user, created) {
 				if (created) {
-					return done(null, {username : user.username, name: user.name});
+					return done(null, {username : user.username, name: user.name, balance: user.balance});
 				}
 				else
 					return done(null, false, {message: "This username is taken"});
