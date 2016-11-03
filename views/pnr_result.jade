@@ -1,0 +1,96 @@
+extends layout
+
+block content
+    div
+        table.table.table-bordered
+            thead
+                tr
+                    th PNR No.
+                    th Train No.
+                    th Train Name
+                    th Class
+                    th Date of Journey
+                    th Boarding Point
+                    th Destination Point
+                    th No. of Passengers
+            tbody
+                - var j=0;
+                for passenger in passenger_data
+                    - j++;
+                tr
+                    td #{pnr_data[0].pnr}
+                    td #{pnr_data[0].train_no}
+                    td #{pnr_data[0].name}
+                    td #{pnr_data[0].coach_class}
+                    td #{pnr_data[0].date_of_journey.getDate()}/#{pnr_data[0].date_of_journey.getUTCMonth() + 1}/#{pnr_data[0].date_of_journey.getFullYear()}
+                    td #{pnr_data[0].boarding_pt}
+                    td #{pnr_data[0].destination}
+                    td #{j}
+    .container
+        div.mainbox.col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2#loginbox(style='margin-top:50px;')
+            .panel.panel-info
+                .panel-heading
+                    div.panel-title PNR Status
+                div.panel-body(style="padding-top:30px")
+                    div
+                        table.table.table-bordered
+                            thead
+                                tr
+                                    th S.No.
+                                    th Passenger Name
+                                    th Age
+                                    th Gender
+                                    th Preference
+                                    th Booking Status
+                                    th Current Status
+
+                            tbody
+                                - var i=0
+                                for passenger in passenger_data
+                                    - i++;
+                                    tr
+                                        td #{i}
+                                        td #{passenger.name}
+                                        td #{passenger.age}
+                                        td #{passenger.gender}
+                                        td #{passenger.preference}
+                                        td WL/19
+                                        td #{passenger.coach_id} #{passenger.seat_no}
+//
+   Created by ankur on 10/25/2016.
+
+    with pnr_data_1 as (select distinct pnr,train_no,date_of_journey,boarding_pt,destination from ticket where pnr=?),
+         pnr_data_2 as (select pnr,train_no,train_name,date_of_journey,boarding_pt,destination from pnr_data_1 natural join train)
+    select pnr,train_no,train_name,'class',date_of_journey,boarding_pt,destination
+    from pnr_data_2 natural join travels_in natural join coach;
+
+    WITH pnr_data_1 AS (SELECT DISTINCT
+                          pnr,
+                          train_no,
+                          date_of_journey,
+                          boarding_pt,
+                          destination
+                        FROM ticket
+                        WHERE pnr = 1234567890),
+        pnr_data_2 AS (SELECT
+                         pnr,
+                         train_no,
+                         name,
+                         date_of_journey,
+                         boarding_pt,
+                         destination
+                       FROM pnr_data_1
+                         NATURAL JOIN train)
+    SELECT *
+    FROM pnr_data_2
+      NATURAL JOIN travels_in ;
+
+    with pnr_status_1 as (select pnr,p_id,preference,status,coach_id,seat_no,waitlist_no from travels_in where pnr=?)
+    select name,age,gender,preference,status,coach_id,seat_no,waitlist_no
+    from pnr_status_1 natural join passenger;
+
+    with pnr_data_1 as (select pnr,train_no,date_of_journey,boarding_pt,destination from ticket where pnr='1234567890'),
+        pnr_data_2 as (select pnr,train_no,name,date_of_journey,boarding_pt,destination from pnr_data_1 natural join train)
+        select distinct pnr_data_2.pnr,pnr_data_2.train_no,pnr_data_2.name,coach.coach_class,pnr_data_2.date_of_journey,pnr_data_2.boarding_pt,pnr_data_2.destination from pnr_data_2,travels_in,coach where pnr_data_2.train_no=travels_in.train_no and travels_in.coach_id=coach.coach_id;
+
+

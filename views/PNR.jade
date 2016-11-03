@@ -7,11 +7,14 @@ block content
                 .panel-heading
                     div.panel-title PNR Status
                 div.panel-body(style="padding-top:30px")
+                    if locals.status && locals.status != ''
+                        div.alert.alert-danger.col-sm-12#login-alert
+                            p= status
                     form(id='pnr-form',class='form-horizontal',role='form', action='/pnr', method='post')
                         div.input-group(style="margin-bottom: 25px")
                             span.input-group-addon
                                 i.glyphicon.glyphicon-list-alt
-                            input.form-control(id='pnr_number',type='text',name='pnr',placeholder='PNR')
+                            input.form-control(id='pnr',type='number',min="1000000000",max="9999999999",name='pnr',placeholder='PNR',required=true)
                         div.form-group(style="margin-top:10px")
                             .col-sm-12.controls
                                 button.btn.btn-success(id='btn-login',type='submit',form='pnr-form',value='Submit') Submit
