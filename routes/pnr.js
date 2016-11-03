@@ -75,7 +75,7 @@ router.post('/', function (req, res) {
                 passenger_data = data;
             }
 
-            console.log(pnr_data);
+//            console.log(pnr_data);
 
             //if(status=="OK"){
             res.render('pnr_result',
