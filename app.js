@@ -20,6 +20,7 @@ var signup = require('./routes/signup');
 var login = require('./routes/login');
 var station = require('./routes/station');
 var wallet = require('./routes/wallet');
+var search_trains = require('./routes/search_trains');
 
 var app = express();
 
@@ -100,7 +101,7 @@ passport.deserializeUser(function(username, done) {
 });
 
 // passport set up done
-var publicPaths = ['/login', '/signup', '/pnr', '/station/autocomplete'];
+var publicPaths = ['/login', '/signup', '/pnr', '/station/autocomplete', '/search_trains'];
 app.all('*', function(req,res,next) {
   if (publicPaths.indexOf(req.path) >= 0) {
       console.log(req.path);
@@ -122,6 +123,7 @@ app.use('/signup', signup);
 app.use('/login', login);
 app.use('/wallet', wallet);
 app.use('/station', station);
+app.use('/search_trains', search_trains);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
