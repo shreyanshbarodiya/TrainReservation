@@ -62,10 +62,10 @@ create table schedule
 	);
 
 create table transaction
-	(txn_id					numeric(12,0),
+	(txn_id					numeric(15,0),
 	 username				varchar(100),
-	 debit					numeric(1,0),
-	 credit					numeric(1,0) check (credit != debit),
+	 debit					numeric(8,2),
+	 credit					numeric(8,2) check (credit is NULL OR debit is NULL),
 	 primary key (txn_id),
 	 foreign key (username) references "user"(username) on delete cascade
 	);

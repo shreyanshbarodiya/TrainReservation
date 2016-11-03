@@ -14,7 +14,8 @@ append head
           url: url,
           data: $("#add-money-form").serialize()}) // serializes the form's elements.
                 .success( function (data) {
-                  alert('Successfully added amount to wallet!'); // show response from the php script.
+                  alert('Successfully added amount to wallet!');
+                  $('#balance').html("&nbsp; &#x20B9; " + data.data);
                 })
                 .error(function (error, status) {
                   alert('Failed to add money!');
@@ -29,11 +30,10 @@ append head
 
 append navbar-contents
       ul.nav.navbar-nav.navbar-right
-        if locals.balance
-          li
-            a(href="#",data-toggle="modal",data-target="#add-money-modal")
-              span.glyphicon.glyphicon-piggy-bank
-              text &nbsp &#x20B9; {#balance}
+        li
+          a(href="#",data-toggle="modal",data-target="#add-money-modal")
+            span.glyphicon.glyphicon-piggy-bank
+            text#balance &nbsp; &#x20B9; #{balance}
         li
           a(href="logout")
             span.glyphicon.glyphicon-log-in
