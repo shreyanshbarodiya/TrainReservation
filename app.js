@@ -20,6 +20,7 @@ var signup = require('./routes/signup');
 var login = require('./routes/login');
 var station = require('./routes/station');
 var wallet = require('./routes/wallet');
+var search_trains = require('./routes/search_trains');
 
 var app = express();
 
@@ -96,11 +97,12 @@ passport.deserializeUser(function (user, done) {
 /* All public routes */
 app.use('/pnr', pnr);
 app.use('/signup', signup);
+app.use('/search_trains', search_trains);
+
 app.use('/login', login);
-
 /* Authentication middleware*/
-app.use(ensureAuthenticated);
 
+app.use(ensureAuthenticated);
 /* All private routes below */
 app.use('/', routes);
 app.use('/users', users);
