@@ -20,10 +20,11 @@ router.post('/',function(req,res){
 
     var query = "SELECT DISTINCT " +
         "S1.train_no, " +
+        "name," +
         "S1.departure_time, " +
         "S2.arrival_time, " +
         "coach_class " +
-        "FROM schedule AS S1, schedule AS S2 NATURAL JOIN runs_on " +
+        "FROM schedule AS S1, schedule AS S2 NATURAL JOIN train NATURAL JOIN runs_on " +
         "NATURAL JOIN coach " +
         "WHERE S2.train_no = S1.train_no AND S2.station_count > S1.station_count AND " +
         "runs_on.day_of_week = mod(:dow - 1 + S1.days, 7) " +
@@ -60,12 +61,8 @@ router.post('/',function(req,res){
                 train.coach_class = coach_class;
                 trains.push(train);
             }
-            console.log(trains);
 
-            res.render('search_train_result_date',{title:"Search Trains", search_result:trains});
-
-
-            //console.log(search_results);
+            res.render('search_train_result_date',{title:"Search Trains", search_result:trains, balance:req.user.balance});
         }
 
 /*        res.render('pnr_result',

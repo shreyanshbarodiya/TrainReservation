@@ -3,6 +3,17 @@
 
 extends layout
 
+append navbar-contents
+    ul.nav.navbar-nav.navbar-right
+        li
+            a(href="#",data-toggle="modal",data-target="#add-money-modal")
+                span.glyphicon.glyphicon-piggy-bank
+                text#balance &nbsp; &#x20B9; #{balance}
+        li
+            a(href="logout")
+                span.glyphicon.glyphicon-log-in
+                text &nbsp Logout
+
 block content
     .container-fluid
         .row
@@ -33,11 +44,12 @@ block content
                 .col-lg-9
                     div.mainbox#search_train_results
                         div
-                            table.table.table-bordered
+                            table.table.table-hover
                                 thead
                                     tr
                                         th S.No.
                                         th Train No.
+                                        th Train Name
                                         th Departure
                                         th Arrival
                                         th Coaches
@@ -49,6 +61,7 @@ block content
                                         tr
                                             td #{i}
                                             td #{train.train_no}
+                                            td #{train.name}
                                             td #{train.departure_time}
                                             td #{train.arrival_time}
                                             td #{train.coach_class}
