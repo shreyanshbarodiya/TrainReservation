@@ -8,6 +8,7 @@ append head
     script(src="https://code.jquery.com/jquery-1.12.4.js")
     script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
     script(src="/js/autocomplete.js")
+    script(src="/js/availability.js")
 
 append navbar-contents
     ul.nav.navbar-nav.navbar-right
@@ -33,21 +34,22 @@ block content
                                 div.form-group
                                     label.col-md-3.control-label(for="search-from") From Station
                                     .col-md-9
-                                        input.form-control(type="text",id='search-from', name="search_from", placeholder="From")
+                                        input.form-control(type="text",id='search-from', name="search_from", placeholder="From", value=search_from)
                                 div.form-group
                                     label.col-md-3.control-label(for="search-to") To Station
                                     .col-md-9
-                                        input.form-control(type="text",id='search-to', name="search_to", placeholder="To")
+                                        input.form-control(type="text",id='search-to', name="search_to", placeholder="To", value=search_to)
                                 div.form-group
                                     label.col-md-3.control-label(for="search-date") Journey Date
                                     .col-md-9
-                                        input.form-control(type="date",id='search-date', name="search_date")
+                                        input.form-control(type="date",id='search-date', name="search_date", value=doj)
                                 div.form-group
                                     .col-md-offset-3.col-md-9
                                         button.btn.btn-primary#btn-search Search
 
             block results
                 .col-lg-9
+                    div.col-lg-12#availability_results(style="padding-left:0;text-align:center;")
                     div.mainbox#search_train_results
                         div
                             table.table.table-hover
@@ -67,10 +69,10 @@ block content
                                         tr
                                             td #{i}
                                             td
-                                                a(href="#", onClick="window.open('/schedule/"+train.train_no+"','MyWindow',width=300,height=400);return false") #{train.train_no}
+                                                a(href="#", onClick="window.open('/schedule/"+train.train_no+"','MyWindow','width=350,height=500');return false") #{train.train_no}
                                             td #{train.name}
                                             td #{train.departure_time}
                                             td #{train.arrival_time}
                                             td
                                                 for coach in train.coach_class
-                                                   a(href='#' style='padding-left: 7px') #{coach}
+                                                   a(href="javascript:getAvailability('"+train.train_no+"','"+coach+"','"+search_from+"','"+search_to+"','"+doj+"')" style='padding-left: 7px') #{coach}

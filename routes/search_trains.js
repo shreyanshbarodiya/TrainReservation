@@ -37,7 +37,6 @@ router.post('/',function(req,res){
                 dow: doj.getDay(),
                 source: src,
                 destination: dest
-
             }
         }).spread(function (data,metadata) {
         if (!data) {
@@ -62,18 +61,16 @@ router.post('/',function(req,res){
                 train.coach_class = coach_class;
                 trains.push(train);
             }
-
-            res.render('search_train_result_date',{title:"Search Trains", search_result:trains, balance:req.user.balance});
+            res.render('search_train_result_date',{title:"Search Trains", search_result:trains, balance:req.user.balance, search_from:src, search_to: dest, doj: req.body.search_date});
         }
-
-/*        res.render('pnr_result',
-            {
-                title: "PNR Status",
-                search_results: search_results
-            });*/
     });
 
 
 });
+
+router.post('/availability', function (req, res) {
+    //TODO Add query for getting availability
+    res.send(req.body.coach);
+})
 
 module.exports = router;
