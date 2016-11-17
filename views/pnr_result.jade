@@ -13,8 +13,10 @@ block content
                     th Boarding Point
                     th Destination Point
                     th No. of Passengers
+
             tbody
                 - var j=0;
+
                 for passenger in passenger_data
                     - j++;
                 tr
@@ -26,8 +28,9 @@ block content
                     td #{pnr_data[0].boarding_pt}
                     td #{pnr_data[0].destination}
                     td #{j}
+
     .container
-        div.mainbox.col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2#loginbox(style='margin-top:50px;')
+        div.mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#loginbox(style='margin-top:50px;')
             .panel.panel-info
                 .panel-heading
                     div.panel-title PNR Status
@@ -43,19 +46,31 @@ block content
                                     th Preference
                                     th Booking Status
                                     th Current Status
+                                    if locals.cancel && locals.cancel != ''
+                                        th Select
 
                             tbody
                                 - var i=0
-                                for passenger in passenger_data
-                                    - i++;
-                                    tr
-                                        td #{i}
-                                        td #{passenger.name}
-                                        td #{passenger.age}
-                                        td #{passenger.gender}
-                                        td #{passenger.preference}
-                                        td WL/19
-                                        td #{passenger.coach_id} #{passenger.seat_no}
+                                form(id='cancel-form',role='form')
+                                    input.form-control(type="hidden", id="cancel_pnr", name="pnr", value= pnr_data[0].pnr )
+                                    for passenger in passenger_data
+                                        - i++;
+                                        tr
+                                            td #{i}
+                                            td #{passenger.name}
+                                            td #{passenger.age}
+                                            td #{passenger.gender}
+                                            td #{passenger.preference}
+                                            td WL/19
+                                            td #{passenger.coach_id} #{passenger.seat_no}
+                                            if locals.cancel && locals.cancel != ''
+                                                td
+                                                    input.form-control(type="checkbox",id='cancel_pid', name="p_id",value= passenger.p_id)
+
+                        div
+                            button.btn.btn-danger#cancel_btn(form='cancel-form',formaction='/cancel',formmethod='post',type='submit') Cancel
+
+
 //
    Created by ankur on 10/25/2016.
 

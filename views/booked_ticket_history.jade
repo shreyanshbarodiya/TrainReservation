@@ -1,0 +1,41 @@
+extends layout
+
+block content
+    .container
+        div.mainbox.col-md-8.col-md-offset-2.col-sm-8.col-sm-offset-2#bookedticketbox(style='margin-top:50px;')
+            .panel.panel-info
+                .panel-heading
+                    div.panel-title Booked Ticket History
+                div.panel-body(style="padding-top:30px")
+                    table.table.table-bordered
+                        thead
+                            tr
+                                th Select
+                                th S.No.
+                                th PNR
+                                th Train No.
+                                th From
+                                th To
+                                th Date of Journey
+                                th Reservation Status
+                        tbody
+                            - var i=0
+                            form(id='booked-form',role='form')
+                                for ticket in tickets
+                                    - i++;
+                                    tr
+                                        td
+                                            input.form-control(type="radio",id='booked_index', name="pnr",value=ticket.pnr,required)
+                                        td #{i}
+                                        td #{ticket.pnr}
+                                        td #{ticket.train_no}
+                                        td #{ticket.boarding_pt}
+                                        td #{ticket.destination}
+                                        td #{ticket.date_of_journey.getDate()}/#{ticket.date_of_journey.getUTCMonth() + 1}/#{ticket.date_of_journey.getFullYear()}
+                                        td Booked
+
+                    div
+                        button.btn.btn-danger#cancel_pnr_btn(form='booked-form',formaction='/pnr',formmethod='post',type='submit',name="cancel",value="Cancel") Cancel
+                        if locals.cancelFlag && locals.cancelFlag != ''
+                            button.btn.btn-primary#pnr_status(form='booked-form',formaction='/pnr',formmethod='post',type='submit') PNR status
+

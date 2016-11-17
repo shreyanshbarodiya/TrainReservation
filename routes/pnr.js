@@ -76,13 +76,14 @@ router.post('/', function (req, res) {
             }
 
 //            console.log(pnr_data);
-
+            console.log(req.body.cancel);
             //if(status=="OK"){
             res.render('pnr_result',
                 {
                     title: "PNR Status",
                     pnr_data: pnr_data,
-                    passenger_data: passenger_data
+                    passenger_data: passenger_data,
+                    cancel : req.body.cancel
                 });
             //}else{
             //res.render('pnr',{title:"PNR Enquiry", status:status});

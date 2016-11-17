@@ -3,7 +3,7 @@ var router = express.Router();
 
 var models = require('../models');
 
-router.post('/', function (req, res) {
+router.get('/', function (req, res) {
     models.Ticket.findAll({
         where: {username: req.user.username}
     }).then(function (tickets) {
@@ -12,3 +12,5 @@ router.post('/', function (req, res) {
         res.render('index', {title: 'Home', error: err.message});
     })
 });
+
+module.exports = router;
