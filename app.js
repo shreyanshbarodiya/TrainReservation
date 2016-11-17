@@ -23,6 +23,7 @@ var wallet = require('./routes/wallet');
 var search_trains = require('./routes/search_trains');
 var booked_history = require('./routes/booked_history');
 var schedule = require('./routes/schedule');
+var cancel = require('./routes/cancel');
 
 var app = express();
 
@@ -111,6 +112,8 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/station', station);
 app.use('/wallet', wallet);
+app.use('/cancel', cancel);
+app.use('/booked_history', booked_history);
 
 app.get('/logout', function (req, res) {
 	req.logOut();

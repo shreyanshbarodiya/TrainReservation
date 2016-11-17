@@ -36,6 +36,6 @@ block content
 
                     div
                         button.btn.btn-danger#cancel_pnr_btn(form='booked-form',formaction='/pnr',formmethod='post',type='submit',name="cancel",value="Cancel") Cancel
-                        if locals.cancelFlag && locals.cancelFlag != ''
+                        if !(locals.cancelFlag && locals.cancelFlag != '')
                             button.btn.btn-primary#pnr_status(form='booked-form',formaction='/pnr',formmethod='post',type='submit') PNR status
 
