@@ -21,6 +21,7 @@ var login = require('./routes/login');
 var station = require('./routes/station');
 var wallet = require('./routes/wallet');
 var search_trains = require('./routes/search_trains');
+var schedule = require('./routes/schedule');
 
 var app = express();
 
@@ -98,6 +99,7 @@ passport.deserializeUser(function (user, done) {
 app.use('/pnr', pnr);
 app.use('/signup', signup);
 app.use('/search_trains', search_trains);
+app.use('/schedule', schedule);
 
 app.use('/login', login);
 /* Authentication middleware*/

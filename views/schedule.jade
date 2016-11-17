@@ -1,0 +1,29 @@
+//
+   Created by Gaurav on 15-11-2016.
+html
+    head
+        title= title
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+    body
+        div
+            table.table.table-hover
+                thead
+                    tr
+                        th S.No.
+                        th Station
+                        th Arrival
+                        th Departure
+                        th Distance
+                        th Day
+                tbody
+                    for schedule in schedules
+                        tr
+                            td #{schedule.station_count}
+                            td #{schedule.station_id}
+                            td #{schedule.arrival_time}
+                            td #{schedule.departure_time}
+                            td #{schedule.distance} km
+                            td #{schedule.days}
+
+
