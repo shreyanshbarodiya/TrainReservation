@@ -111,7 +111,6 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/station', station);
 app.use('/wallet', wallet);
-app.use('/booked_history', booked_history);
 
 app.get('/logout', function (req, res) {
 	req.logOut();

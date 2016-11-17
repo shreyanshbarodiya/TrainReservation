@@ -66,8 +66,11 @@ block content
                                         - i++;
                                         tr
                                             td #{i}
-                                            td #{train.train_no}
+                                            td
+                                                a(href="#", onClick="window.open('/schedule/"+train.train_no+"','MyWindow',width=300,height=400);return false") #{train.train_no}
                                             td #{train.name}
                                             td #{train.departure_time}
                                             td #{train.arrival_time}
-                                            td #{train.coach_class}
+                                            td
+                                                for coach in train.coach_class
+                                                   a(href='#' style='padding-left: 7px') #{coach}

@@ -50,13 +50,14 @@ router.post('/',function(req,res){
 
             for(var i=0; i<search_results.length ; ){
                 var train = search_results[i];
-                var coach_class = train.coach_class;
+                var coach_class = new Array();
+                coach_class.push(train.coach_class);
 
                 while(true){
                     if(++i >= search_results.length || search_results[i].train_no != train.train_no){
                         break;
                     }
-                    coach_class += " " + search_results[i].coach_class;
+                    coach_class.push(search_results[i].coach_class);
                 }
                 train.coach_class = coach_class;
                 trains.push(train);

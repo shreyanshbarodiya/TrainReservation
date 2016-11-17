@@ -16,7 +16,7 @@ router.get('/:train_no', function (req, res) {
         }
     ).then(function(schedules) {
         schedules[0].arrival_time = 'Source';
-        schedules[schedules.length - 1].departure_time = 'Destination'
+        schedules[schedules.length - 1].departure_time = 'Destination';
         res.render('schedule', {title: "Schedule for Train no "+train_no, schedules:schedules});
     });
 });
