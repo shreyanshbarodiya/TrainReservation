@@ -3,9 +3,9 @@ extends layout
 append head
     script.
         function getCheckboxValues() {
-            var checked =  $(":checked").toArray();
+            var checked = $(":checked").toArray();
             var pids = [];
-            for (var i = 0; i < checked.length; i++){
+            for (var i = 0; i < checked.length; i++) {
                 pids.push(checked[i]["name"]);
             }
             return pids;
@@ -14,20 +14,28 @@ append head
         $(function () {
             $("#cancel-form").submit(function (event) {
                 event.preventDefault();
-                $.ajax({
-                    type: "POST",
-                    url: "/cancel",
-                    data: $(this).serialize() + '&p_id=' + getCheckboxValues().toString()
-                })
-                    .success(function (data) {
-                        if (data.status == 'SUCCESS')
-                            alert('Successfully cancelled ' + data.data + ' ticket(s)');
-                        else
-                            alert('Failed to process request.');
+                var checkboxValues = getCheckboxValues();
+                if (checkboxValues.length == 0)
+                    alert('No tickets selected to be canceled');
+                else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/cancel",
+                        data: $(this).serialize() + '&p_id=' + getCheckboxValues().toString()
                     })
-                    .error(function (error) {
-                        alert('Internal Server Error');
-                    });
+                        .done(function (data) {
+                            if (data.status == 'SUCCESS') {
+                                alert('Successfully cancelled ' + data.data + ' ticket(s)');
+                                if (data.data != 0)
+                                    window.location.reload();
+                            }
+                            else
+                                alert('Database Error: ' + data.data);
+                        })
+                        .fail(function () {
+                            alert('Internal Server Error');
+                        })
+                }
             });
         });
 
@@ -97,7 +105,7 @@ block content
                                             if passenger.status == 'CAN'
                                                 td Cancelled
                                             else
-                                                td #{passenger.coach_id} #{passenger.seat_no}
+                                                td #{passenger.coach_id}/#{passenger.seat_no}
                                             if locals.cancel && locals.cancel != '' && passenger.status != 'CAN'
                                                 td
                                                     input.form-control.cancel_pid(type="checkbox", name="#{passenger.p_id}" )

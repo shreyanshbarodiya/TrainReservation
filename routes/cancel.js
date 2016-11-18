@@ -15,11 +15,11 @@ router.get('/', function (req, res) {
 
 router.post('/', function (req, res) {
     models.Travels_in.update({status: 'CAN'}, {where: {pnr: parseInt(req.body.pnr, 10), p_id: req.body.p_id}})
-        .spread(function (affectedCount, affectedRows) {
+        .spread(function (affectedCount) {
             res.json({status: 'SUCCESS', data: affectedCount});
         })
         .catch(function (err) {
-            res.json({status: 'ERROR', data: err});
+            res.json({status: 'ERROR', data: err.message});
         })
 });
 
