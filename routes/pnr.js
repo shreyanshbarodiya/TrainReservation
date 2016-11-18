@@ -19,7 +19,7 @@ router.post('/', function (req, res) {
     var query_common = 'WITH pnr_data_1 AS (SELECT ' +
         'pnr,' +
         'train_no,' +
-        'date_of_journey,' +
+        'date_of_boarding,' +
         'boarding_pt,' +
         'destination ' +
         'FROM ticket ' +
@@ -28,7 +28,7 @@ router.post('/', function (req, res) {
         'pnr,' +
         'train_no,' +
         'name,' +
-        'date_of_journey,' +
+        'date_of_boarding,' +
         'boarding_pt,' +
         'destination ' +
         'FROM pnr_data_1 ' +
@@ -38,7 +38,7 @@ router.post('/', function (req, res) {
         'pnr_data_2.train_no,' +
         'pnr_data_2.name,' +
         'coach.coach_class,' +
-        'pnr_data_2.date_of_journey,' +
+        'pnr_data_2.date_of_boarding,' +
         'pnr_data_2.boarding_pt,' +
         'pnr_data_2.destination ' +
         'FROM pnr_data_2, travels_in, coach ' +

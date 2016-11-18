@@ -49,8 +49,9 @@ block content
 
             block results
                 .col-lg-9
-                    div.col-lg-12#availability_results(style="padding-left:0;text-align:center;")
-                    div.col-lg-12#fare_results(style="padding-left:0;text-align:center;")
+                    div.col-lg-12
+                        div.col-lg-6#availability_results(style="padding-left:0;text-align:center;")
+                        div.col-lg-6#fare_results(style="padding-left:0;text-align:center;")
                     div.mainbox#search_train_results
                         div
                             table.table.table-hover
@@ -61,6 +62,7 @@ block content
                                         th Train Name
                                         th Departure
                                         th Arrival
+                                        th Day of Week
                                         th Coaches
 
                                 tbody
@@ -75,5 +77,8 @@ block content
                                             td #{train.departure_time}
                                             td #{train.arrival_time}
                                             td
+                                                for day in train.day_of_week
+                                                    text #{day} &nbsp;
+                                            td
                                                 for coach in train.coach_class
-                                                   a(href="javascript:getAvailability('"+train.train_no+"','"+coach+"','"+search_from+"','"+search_to+"','"+search_date+"')" style='padding-left: 7px') #{coach}
+                                                   a(href="javascript:getAvailability('"+train.train_no+"','"+coach+"','"+search_from+"','"+search_to+"','"+train.doj+"','"+search_date+"')" style='padding-left: 7px') #{coach}

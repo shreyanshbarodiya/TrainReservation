@@ -31,28 +31,27 @@ router.get('/', function (req, res){
     res.render('search_trains', {title: "Search Trains"});
 });
 
+var dayOfWeek = ['Su', 'M', 'Tu', 'W', 'Th', 'F', 'Sa'];
+
 router.post('/',function(req,res){
     var src = req.body.search_from;
     var dest = req.body.search_to;
-    var doj = new Date(req.body.search_date);
+    var dob = new Date(req.body.search_date);
 
-    var query = "SELECT DISTINCT " +
-        "S1.train_no, " +
-        "name," +
-        "S1.departure_time, " +
-        "S2.arrival_time, " +
-        "coach_class " +
+    var query = "WITH search_result AS (SELECT DISTINCT S1.train_no,name,S1.departure_time,S2.arrival_time, " +
+        "coach_class, S1.days " +
         "FROM schedule AS S1, schedule AS S2 NATURAL JOIN train NATURAL JOIN runs_on " +
         "NATURAL JOIN coach " +
         "WHERE S2.train_no = S1.train_no AND S2.station_count > S1.station_count AND " +
         "runs_on.day_of_week = mod(:dow - 1 + S1.days, 7) " +
         "AND S1.station_id = :source AND S2.station_id = :destination " +
-        "ORDER BY train_no;";
+        "ORDER BY train_no, coach_class)" +
+        "SELECT * FROM search_result NATURAL JOIN runs_on;";
 
     seq.query(query,
         {
             replacements: {
-                dow: doj.getDay(),
+                dow: dob.getDay(),
                 source: src,
                 destination: dest
             }
@@ -68,15 +67,28 @@ router.post('/',function(req,res){
             for(var i=0; i<search_results.length ; ){
                 var train = search_results[i];
                 var coach_class = new Array();
+                var day_of_week = new Array();
                 coach_class.push(train.coach_class);
-
+                day_of_week.push(dayOfWeek[train.day_of_week]);
+                while(true) {
+                    if (++i >= search_results.length || search_results[i].coach_class != train.coach_class) {
+                        break;
+                    }
+                    day_of_week.push(dayOfWeek[search_results[i].day_of_week]);
+                }
                 while(true){
-                    if(++i >= search_results.length || search_results[i].train_no != train.train_no){
+                    if(i >= search_results.length || search_results[i].train_no != train.train_no){
                         break;
                     }
                     coach_class.push(search_results[i].coach_class);
+                    i = i+day_of_week.length;
                 }
                 train.coach_class = coach_class;
+                train.day_of_week = day_of_week;
+                var doj = new Date(req.body.search_date);
+                doj.setDate(doj.getDate() - (train.days - 1));
+                console.log(doj);
+                train.doj = doj.getFullYear()+'-'+(doj.getUTCMonth()+1)+'-'+doj.getDate();
                 trains.push(train);
             }
             res.render('search_train_result_date',{title:"Search Trains", search_result:trains, balance:req.user.balance, search_from:src, search_to: dest, search_date: req.body.search_date});
@@ -126,7 +138,7 @@ router.post('/availability', function (req, res) {
             else {
                 availability = 'WL' + parseInt(availability)*-1;
             }
-            var response = {availability: availability, fare: '&#x20B9; '+getFare(distance, postData.coach_class)};
+            var response = {availability: availability, fare: '&#x20B9; '+getFare(distance, postData.coach_class).toFixed(2)};
             res.send(response);
         }
     })
