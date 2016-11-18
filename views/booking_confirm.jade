@@ -1,0 +1,39 @@
+//
+   Created by Gaurav on 18-11-2016.
+block content
+    div.mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#traindetails(style='margin-top:40px;')
+        .panel.panel-info
+            .panel-heading
+                div.panel-title Journey details
+            div.panel-body(style="padding-top:15px")
+                div.col-md-4 Train no. : #{train_no}
+                div.col-md-4 Boarding date : #{boarding_date}
+                div.col-md-4 Class : #{coach_class}
+                div.col-md-3 From station : #{from}
+                div.col-md-3 To Station : #{to}
+                div.col-md-3 Fare : #{fare}
+
+    div.mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#passengerdetails(style='margin-top:20px;')
+        .panel.panel-info
+            .panel-heading
+                div.panel-title Passenger details
+                    table.table
+                        thead
+                            tr
+                                th.col-md-1 S.No.
+                                th.col-md-5 Name
+                                th.col-md-1 Age
+                                th.col-md-2 Gender
+                                th.col-md-3 Status
+                        tbody
+                            - for passenger,i in passengers
+                                tr
+                                    td #{i}
+                                    td #{passenger.name}
+                                    td #{passenger.age}
+                                    td #{passenger.gender}
+                                    td #{passenger.status}
+    button.btn.btn-info(onclick='window.print()')
+        span.glyphicon.glyphicon-print
+        a Print
+
