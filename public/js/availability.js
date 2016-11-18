@@ -1,8 +1,8 @@
 /**
  * Created by Gaurav on 18-11-2016.
  */
-function getAvailability(train_no, coach_class, from, to, date) {
-    var availResult = "<div class='panel panel-default'><div class='panel-heading'><div class='panel-title'>Availability</div></div><div class='panel-body'>";
+function getAvailability(train_no, coach_class, from, to, date, dob) {
+    var availResult = "<div class='panel panel-default'><div class='panel-heading'><div class='panel-title'>Availability</div></div><div class='panel-body'><p>";
     var fareResult = "<div class='panel panel-default'><div class='panel-heading'><div class='panel-title'>Fare</div></div><div class='panel-body'>";
     $.post("/search_trains/availability",
         {
@@ -13,6 +13,7 @@ function getAvailability(train_no, coach_class, from, to, date) {
             date: date
         }).done(function (data, status) {
         availResult += data.availability;
+        availResult += '</p><a href="/booking_form/'+train_no+'/'+coach_class+'/'+from+'/'+to+'/'+date+'/'+dob+'">Book now</a>';
         fareResult += data.fare;
         fareResult += "</div></div>";
         $('#fare_results').html(fareResult);
