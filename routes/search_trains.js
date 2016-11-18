@@ -7,6 +7,24 @@ var router = express.Router();
 var models = require('../models');
 var seq = models.sequelize;
 
+var classFare = {
+    '1A':[10,5,2],
+    '2A':[7.5,3,1.5],
+    '3A':[5,1.5,0.8],
+    'SL':[4,1,0.4],
+    'CC':[4.5,1.5,0.7],
+    '2S':[3,1,0.3]
+};
+
+function getFare(distance, coach_class) {
+    var fareRate = classFare[coach_class];
+    if(distance < 50)
+        return fareRate[0]*distance;
+    else if(distance < 150)
+        return fareRate[0]*50 + fareRate[1]*(distance-50);
+    else
+        return fareRate[0]*50 + fareRate[1]*100 + fareRate[2]*(distance-150);
+}
 
 /* GET users listing. */
 router.get('/', function (req, res){
@@ -69,28 +87,48 @@ router.post('/',function(req,res){
 });
 
 router.post('/availability', function (req, res) {
-    //TODO Add query for getting availability
     var postData = req.body;
     var query = "WITH traveller as (SELECT pnr,p_id,boarding_pt,destination " +
                                     "FROM travels_in NATURAL JOIN  ticket NATURAL JOIN coach " +
-                                    "WHERE date_of_journey= :doj and train_no = :train_no and (status='CNF' or status='WL') and coach.coach_class = :coach_class)," +
+                                    "WHERE date_of_journey= :date and train_no = :train_no and (status='CNF' or status='WL') and coach.coach_class = :coach_class)," +
+                        "total_capacity as (select sum(capacity) as total_seat from coach where train_no = :train_no and coach_class = :coach_class)," +
                         "start_count as (select station_count as start from schedule where train_no=:train_no and station_id = :from)," +
                         "finish_count as(select station_count as finish from schedule where train_no=:train_no and station_id= :to)," +
                         "traveller_count as(select count(p_id) as total_ticket from traveller)," +
                         "noobj_traveller as(select count(p_id) as noobj_ticket " +
                                             "from traveller,schedule,start_count,finish_count " +
                                             "where schedule.train_no = :train_no and ((traveller.boarding_pt = schedule.station_id and schedule.station_count > finish_count.finish) " +
-                                            "OR (traveller.destination = schedule.station_id and schedule.station_count<start_count.start)) " +
-                "select (traveller_count.total_ticket-noobj_traveller.noobj_ticket) as conflicts " +
-        "from traveller_count, noobj_traveller; ";
+                                            "OR (traveller.destination = schedule.station_id and schedule.station_count<start_count.start))) " +
+                "select station_id, distance, (select (total_capacity.total_seat - traveller_count.total_ticket + noobj_traveller.noobj_ticket) " +
+                    "from total_capacity, traveller_count, noobj_traveller) as availability " +
+                "from schedule where train_no=:train_no;";
 
     seq.query(query,
         {
             replacements: postData
         }).then(function (data) {
-        console.log(data);
-        var data = {availability:req.body.coach_class, fare: 500};
-        res.send(data);
+        if(!data) {
+            res.statusCode(400).send('Query failed!');
+        }
+        else {
+            var result = data[0];
+            var distance = 0;
+            var availability = data[0][0].availability;
+            for(var i=0; i< data[0].length; i++) {
+                station = data[0][i];
+                if (station.station_id == postData.to)
+                    distance += station.distance;
+                else if (station.station_id == postData.from)
+                    distance -= station.distance;
+            }
+            if(parseInt(availability)>0)
+                availability = 'Available ' + availability;
+            else {
+                availability = 'WL' + parseInt(availability)*-1;
+            }
+            var response = {availability: availability, fare: '&#x20B9; '+getFare(distance, postData.coach_class)};
+            res.send(response);
+        }
     })
 })
 
