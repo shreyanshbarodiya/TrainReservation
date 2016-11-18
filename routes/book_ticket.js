@@ -5,7 +5,6 @@ var express = require('express');
 var router = express.Router();
 
 var models = require('../models');
-var seq = models.sequelize;
 
 
 function getSeat(trainDetails,passengerList){
@@ -134,32 +133,72 @@ function getSeat(trainDetails,passengerList){
 }
 
 router.post('/', function (req, res) {
-    var passengers = new Array();
-    for(var i=1; i<=6; i++) {
-        if(req.body['name'+i] === '')
+    var passengers = [];
+    for (var i = 1; i <= 6; i++) {
+        if (req.body['name' + i] === '')
             break;
         passengers.push(
             {   p_id: Math.round(Math.random()*100000),
-                name:req.body['name'+i],
-                age:req.body['age'+i],
-                gender:req.body['gender'+i],
-                preference:req.body['preference'+i],
+                name: req.body['name' + i],
+                age: req.body['age' + i],
+                gender: req.body['gender' + i],
+                preference: req.body['preference' + i]
             }
         )
     }
-    if(passengers.length == 0) {
+    if (passengers.length == 0) {
         req.body.err_msg = 'No passenger selected';
         res.render('booking_form', req.body);
     }
     var fare = parseFloat(req.body.fare);
-    if(passengers.length * fare > req.user.balance) {
+    if (passengers.length * fare > req.user.balance) {
         req.body.err_msg = 'Insufficient balance in your account';
         req.body.balance = req.user.balance;
         res.render('booking_form', req.body);
     }
     var result = getSeat(req.body, passengers);
 
-    res.send(result);
+    var txn_id = Date.now();
+    models.Transaction.create({
+        txn_id: txn_id,
+        username: req.user.username,
+        credit: null,
+        debit: fare
+    });
+    var pnr = Math.round(Math.random()*10000000000);
+    models.Ticket.create({
+        PNR: pnr,
+        date_of_journey: req.body.journey_date,
+        boarding_pt: req.body.from,
+        destination: req.body.to,
+        train_no: req.body.train_no,
+        username: req.user.username,
+        txn_id: txn_id,
+        date_of_boarding: req.body.boarding_date
+    });
+    for(passenger in result) {
+        models.Passenger.create({
+            PNR: pnr,
+            p_id: passenger.p_id,
+            name: passenger.name,
+            age: passenger.age,
+            gender: passenger.gender
+        });
+        models.Travels_in.create({
+            PNR: pnr,
+            p_id: passenger.p_id,
+            train_no: req.body.train_no,
+            coach_id: passenger.coach_id,
+            seat_no: passenger.seat_no,
+            status: passenger.status,
+            booking_status: passenger.status,
+            waitlist_no: passenger.waitlist_no,
+            booking_waitlist_no: passenger.waitlist_no,
+            preference: passenger.preference
+        });
+    }
+
+    res.render('booking_confirm', {title: 'Booking Confirmation', passengers:result, req: req.body});
 });
 
 module.exports = router;

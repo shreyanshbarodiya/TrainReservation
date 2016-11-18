@@ -16,7 +16,7 @@ router.get('/', function (req, res) {
 router.post('/', function (req, res) {
     var pnr = parseInt(req.body.pnr, 10);
     models.Travels_in.update({status: 'CAN'}, {where: {pnr: pnr, p_id: req.body.p_id}})
-        .spread(function (affectedCount, affectedRows) {
+        .spread(function (affectedCount) {
             models.Ticket.findByPrimary(pnr).then(function (ticket) {
                 models.Transaction.findByPrimary(ticket.txn_id).then(function (txn) {
                     models.Transaction.create({
@@ -25,17 +25,22 @@ router.post('/', function (req, res) {
                         credit: txn.debit,
                         debit: null
                     });
-/*                    models.User.find({where: {username: req.user.username}}).then(function (user) {
-                        user.balance = user.balance + txn.debit;
-                        user.save().then(function (savedUser) {
-
+                    models.User.update({balance: req.user.balance + parseInt(txn.debit)}, {where: {username: req.user.username}})
+                        .then(function () {
+                            res.json({status: 'SUCCESS', data: affectedCount});
+                            req.login(user, function (error) {
+                                if (!error) {
+                                    console.log('successfully updated user');
+                                }
+                            });
+                            res.end();
+                        })
+                        .catch(function (err) {
+                            res.json({status: 'ERROR', data: err.message});
                         });
-                    });*/
-                    models.User.updateAttributes({balance: req.user.balance + txn.debit}, {where: {username: req.user.username}})
-                    res.json({status: 'SUCCESS', data: affectedCount});
                 })
             }).catch(function (err) {
-                res.json({status: 'ERROR', data: err});
+                res.json({status: 'ERROR', data: err.message});
             })
         });
 });

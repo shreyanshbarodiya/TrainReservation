@@ -18,11 +18,11 @@ router.get('/:train_no/:coach_class/:from/:to/:journeydate/:boardingdate', funct
             title: "Book Ticket",
             train_no: train_no,
             coach_class: coach_class,
-            from : from,
-            to : to,
-            journey_date : journey_date,
-            boarding_date : boarding_date,
-            balance : req.user.balance
+            from: from,
+            to: to,
+            journey_date: journey_date,
+            boarding_date: boarding_date,
+            balance: req.user.balance
         });
 });
 module.exports = router;

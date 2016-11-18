@@ -2,13 +2,13 @@ extends layout
 
 block content
     .container
-        div.mainbox.col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2#loginbox(style='margin-top:50px;')
+        div.mainbox.col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2#pnrbox(style='margin-top:50px;')
             .panel.panel-info
                 .panel-heading
                     div.panel-title PNR Status
                 div.panel-body(style="padding-top:30px")
                     if locals.status && locals.status != ''
-                        div.alert.alert-danger.col-sm-12#login-alert
+                        div.alert.alert-danger.col-sm-12#error-alert
                             p= status
                     form(id='pnr-form',class='form-horizontal',role='form', action='/pnr', method='post')
                         div.input-group(style="margin-bottom: 25px")

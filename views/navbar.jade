@@ -17,7 +17,7 @@ append head
                 }) // serializes the form's elements.
                     .done(function (data) {
                         if (data.status == 'ERROR') {
-                            alert('Failed to add money!');
+                            alert('Failed to add money - Database Error: ' + data.data.message);
                         }
                         else {
                             alert('Successfully added amount to wallet!');
