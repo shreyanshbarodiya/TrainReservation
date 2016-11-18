@@ -159,7 +159,47 @@ router.post('/', function (req, res) {
     }
     var result = getSeat(req.body, passengers);
 
-    res.send(result);
+    var txn_id = Date.now();
+    models.Transaction.create({
+        txn_id: txn_id,
+        username: req.user.username,
+        credit: null,
+        debit: fare
+    });
+    var pnr = Math.round(Math.random()*10000000000);
+    models.Ticket.create({
+        PNR: pnr,
+        date_of_journey: req.body.journey_date,
+        boarding_pt: req.body.from,
+        destination: req.body.to,
+        train_no: req.body.train_no,
+        username: req.user.username,
+        txn_id: txn_id,
+        date_of_boarding: req.body.boarding_date
+    });
+    for(passenger in result) {
+        models.Passenger.create({
+            PNR: pnr,
+            p_id: passenger.p_id,
+            name: passenger.name,
+            age: passenger.age,
+            gender: passenger.gender
+        });
+        models.Travels_in.create({
+            PNR: pnr,
+            p_id: passenger.p_id,
+            train_no: req.body.train_no,
+            coach_id: passenger.coach_id,
+            seat_no: passenger.seat_no,
+            status: passenger.status,
+            booking_status: passenger.status,
+            waitlist_no: passenger.waitlist_no,
+            booking_waitlist_no: passenger.waitlist_no,
+            preference: passenger.preference
+        });
+    }
+
+    res.render('booking_confirm', {title: 'Booking Confirmation', passengers:result, req: req.body});
 });
 
 module.exports = router;
