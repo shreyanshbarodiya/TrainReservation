@@ -53,38 +53,59 @@ router.post('/', function (req, res) {
             replacements: {
                 pnr: pnr_number
             }
-        }).spread(function (data,meadata) {
-        if (!data) {
+        }).spread(function (data, metadata) {
+        if (!data || data.length == 0) {
             status = "ERROR"
         }
         else {
             pnr_data = data;
+
+            seq.query(query_passenger,
+                {
+                    replacements: {
+                        pnr: pnr_number
+                    }
+                }).spread(function (data, metadata) {
+                if (!data || data.length == 0) {
+                    status = "ERROR";
+                    res.render('PNR', {
+                        title: "PNR Enquiry",
+                        status: status
+                    });
+                }
+                else {
+                    passenger_data = data;
+                    res.render('pnr_result',
+                        {
+                            title: "PNR Status",
+                            pnr_data: pnr_data,
+                            passenger_data: passenger_data,
+                            cancel: req.body.cancel
+                        });
+                }
+
+            }).catch(function (err) {
+                res.render('PNR', {
+                    title: "PNR Enquiry",
+                    status: err.message
+                });
+            });
         }
 
-        seq.query(query_passenger,
-            {
-                replacements: {
-                    pnr: pnr_number
-                }
-            }).spread(function (data,metadata) {
-            if (!data) {
-                status = "ERROR";
-            }
-            else {
-                status = "OK";
-                passenger_data = data;
-            }
+        if (status == 'ERROR') {
+            status = 'No PNR data found';
+            res.render('PNR', {
+                title: "PNR Enquiry",
+                status: status
+            });
+        }
 
-            res.render('pnr_result',
-                {
-                    title: "PNR Status",
-                    pnr_data: pnr_data,
-                    passenger_data: passenger_data,
-                    cancel : req.body.cancel
-                });
+    }).catch(function (err) {
+        res.render('PNR', {
+            title: "PNR Enquiry",
+            status: err.message
         });
     });
-
 });
 
 module.exports = router;

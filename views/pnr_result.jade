@@ -46,9 +46,10 @@ block content
                     th No. of Passengers
 
             tbody
-                - var j=0;
+                - var j=0,cancelled=0;
 
                 for passenger in passenger_data
+                    - cancelled = (passenger.status == 'CAN') ? cancelled + 1 : cancelled;
                     - j++;
                 tr
                     td #{pnr_data[0].pnr}
@@ -77,7 +78,7 @@ block content
                                     th Preference
                                     th Booking Status
                                     th Current Status
-                                    if locals.cancel && locals.cancel != ''
+                                    if locals.cancel && locals.cancel != '' && j != cancelled
                                         th Select
 
                             tbody
