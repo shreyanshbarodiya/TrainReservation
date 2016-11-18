@@ -61,7 +61,7 @@ router.post('/',function(req,res){
                 train.coach_class = coach_class;
                 trains.push(train);
             }
-            res.render('search_train_result_date',{title:"Search Trains", search_result:trains, balance:req.user.balance, search_from:src, search_to: dest, doj: req.body.search_date});
+            res.render('search_train_result_date',{title:"Search Trains", search_result:trains, balance:req.user.balance, search_from:src, search_to: dest, search_date: req.body.search_date});
         }
     });
 
@@ -70,7 +70,28 @@ router.post('/',function(req,res){
 
 router.post('/availability', function (req, res) {
     //TODO Add query for getting availability
-    res.send(req.body.coach);
+    var postData = req.body;
+    var query = "WITH traveller as (SELECT pnr,p_id,boarding_pt,destination " +
+                                    "FROM travels_in NATURAL JOIN  ticket NATURAL JOIN coach " +
+                                    "WHERE date_of_journey= :doj and train_no = :train_no and (status='CNF' or status='WL') and coach.coach_class = :coach_class)," +
+                        "start_count as (select station_count as start from schedule where train_no=:train_no and station_id = :from)," +
+                        "finish_count as(select station_count as finish from schedule where train_no=:train_no and station_id= :to)," +
+                        "traveller_count as(select count(p_id) as total_ticket from traveller)," +
+                        "noobj_traveller as(select count(p_id) as noobj_ticket " +
+                                            "from traveller,schedule,start_count,finish_count " +
+                                            "where schedule.train_no = :train_no and ((traveller.boarding_pt = schedule.station_id and schedule.station_count > finish_count.finish) " +
+                                            "OR (traveller.destination = schedule.station_id and schedule.station_count<start_count.start)) " +
+                "select (traveller_count.total_ticket-noobj_traveller.noobj_ticket) as conflicts " +
+        "from traveller_count, noobj_traveller; ";
+
+    seq.query(query,
+        {
+            replacements: postData
+        }).then(function (data) {
+        console.log(data);
+        var data = {availability:req.body.coach_class, fare: 500};
+        res.send(data);
+    })
 })
 
 module.exports = router;
