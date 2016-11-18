@@ -7,15 +7,13 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var path = require('path');
-
 var LocalStrategy = require('passport-local').Strategy;
 var passwordHash = require('password-hash');
 
 var models = require('./models');
-
 var routes = require('./routes/index');
-var users = require('./routes/users');
 var pnr = require('./routes/pnr');
+var pnr_enquiry = require('./routes/pnr_enquiry');
 var signup = require('./routes/signup');
 var login = require('./routes/login');
 var station = require('./routes/station');
@@ -33,7 +31,6 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -42,7 +39,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // set up passport
-app.use(session({secret: 'dgfshdfghjdsvjsdvhvgjbvs', resave: false, saveUninitialized: true}));
+app.use(session({secret: '4i6XUv7GI183FLTkl9h7zYCaZe9Gb70w', resave: false, saveUninitialized: true}));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
@@ -62,7 +59,7 @@ passport.use('local-login', new LocalStrategy(
 
             return done(null, {username: user.username, name: user.name, balance: user.balance});
         }).catch(function (error) {
-            return done(null, false, {message: "Internal Server Error: " + error.message});
+            return done(null, false, {message: "Database Error: " + error.message});
         })
     }
 ));
@@ -91,7 +88,7 @@ passport.use('local-signup', new LocalStrategy(
                     return done(null, false, {message: "This username is taken"});
             })
             .catch(function (error) {
-                return done(null, false, {message: "Internal Server Error: " + error.message});
+                return done(null, false, {message: "Database Error: " + error.message});
             })
     }
 ));
@@ -105,7 +102,7 @@ passport.deserializeUser(function (user, done) {
 });
 
 /* All public routes */
-app.use('/pnr', pnr);
+app.use('/pnr_enquiry', pnr_enquiry);
 app.use('/signup', signup);
 app.use('/search_trains', search_trains);
 app.use('/schedule', schedule);
@@ -116,7 +113,7 @@ app.use('/login', login);
 app.use(ensureAuthenticated);
 /* All private routes below */
 app.use('/', routes);
-app.use('/users', users);
+app.use('/pnr', pnr);
 app.use('/station', station);
 app.use('/wallet', wallet);
 app.use('/cancel', cancel);

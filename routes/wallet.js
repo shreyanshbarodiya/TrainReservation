@@ -18,12 +18,16 @@ router.post('/credit', function (req, res) {
                     username: req.user.username,
                     credit: credit,
                     debit: null
+                }).then(function (transaction) {
+                    req.login(user, function (error) {
+                        if (!error) {
+                            console.log('successfully updated user');
+                        }
+                    });
+                }).catch(function (error) {
+                    res.json({status: 'ERROR', data: error});
                 });
-                req.login(user, function (error) {
-                    if (!error) {
-                        console.log('successfully updated user');
-                    }
-                });
+
                 res.end();
             })
             .catch(function (error) {

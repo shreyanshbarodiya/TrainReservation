@@ -28,7 +28,7 @@ block content
       block home
       .col-lg-9
         if locals.error && locals.error != ""
-          h1 Error: #{error}
+          h3 Error: #{error}
         else
           h2 Welcome #{name}
         table.table.table-hover(style="margin-top:5%")

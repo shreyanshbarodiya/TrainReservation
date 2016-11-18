@@ -37,7 +37,7 @@ block content
     .mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#errorbox
         div.panel-body
             if locals.err_msg && locals.err_msg != ''
-                div.alert.alert-danger.col-sm-12#login-alert
+                div.alert.alert-danger.col-sm-12#error-alert
                     p= err_msg
 
     div.mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#passengerdetails(style='margin-top:20px;')

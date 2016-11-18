@@ -77,7 +77,7 @@ create table ticket
 	 destination			varchar(5),
 	 train_no				varchar(5),
 	 username				varchar(100),
-	 txn_id					numeric(12,0),
+	 txn_id					numeric(15,0),
 	 date_of_boarding       date,
 	 primary key (PNR),
 	 foreign key (train_no) references train(train_no) on delete cascade,
@@ -91,7 +91,7 @@ create table ticket
 
 create table passenger
 	(PNR					numeric(10,0),
-	 p_id					numeric(5),
+	 p_id					numeric(5,0),
 	 name					varchar(100),
 	 age					integer,
 	 gender					varchar(20) check (gender in ('Male','Female')),
@@ -101,7 +101,7 @@ create table passenger
 
 create table travels_in
 	(PNR					numeric(10,0),
-	 p_id					numeric(5),
+	 p_id					numeric(5,0),
 	 train_no				varchar(5),
 	 coach_id				varchar(5),
 	 seat_no				integer check (seat_no > 0),

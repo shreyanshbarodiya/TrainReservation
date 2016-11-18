@@ -85,27 +85,24 @@ router.post('/', function (req, res) {
                 }
 
             }).catch(function (err) {
-                res.render('PNR', {
-                    title: "PNR Enquiry",
-                    status: "Internal Server Error: " + err.message
-                });
+                handleError(req, res, err.message);
             });
         }
 
         if (status == 'ERROR') {
-            status = 'No PNR data found';
-            res.render('PNR', {
-                title: "PNR Enquiry",
-                status: status
-            });
+            handleError(req, res, 'No PNR data found');
         }
 
     }).catch(function (err) {
-        res.render('PNR', {
-            title: "PNR Enquiry",
-            status: "Internal Server Error: " + err.message
-        });
+        handleError(req, res, err.message);
     });
 });
+
+function handleError(req, res, message) {
+    if (req.body.cancel)
+        res.render('index', {title: "Home", name: req.user.name, balance: req.user.balance, error: message});
+    else
+        res.render('PNR', {title: 'PNR Enquiry', status: message});
+}
 
 module.exports = router;

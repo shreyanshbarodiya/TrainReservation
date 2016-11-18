@@ -5,7 +5,6 @@ var express = require('express');
 var router = express.Router();
 
 var models = require('../models');
-var seq = models.sequelize;
 
 
 function getSeat(trainDetails,passengerList){
@@ -134,25 +133,25 @@ function getSeat(trainDetails,passengerList){
 }
 
 router.post('/', function (req, res) {
-    var passengers = new Array();
-    for(var i=1; i<=6; i++) {
-        if(req.body['name'+i] === '')
+    var passengers = [];
+    for (var i = 1; i <= 6; i++) {
+        if (req.body['name' + i] === '')
             break;
         passengers.push(
             {   p_id: Math.round(Math.random()*100000),
-                name:req.body['name'+i],
-                age:req.body['age'+i],
-                gender:req.body['gender'+i],
-                preference:req.body['preference'+i],
+                name: req.body['name' + i],
+                age: req.body['age' + i],
+                gender: req.body['gender' + i],
+                preference: req.body['preference' + i]
             }
         )
     }
-    if(passengers.length == 0) {
+    if (passengers.length == 0) {
         req.body.err_msg = 'No passenger selected';
         res.render('booking_form', req.body);
     }
     var fare = parseFloat(req.body.fare);
-    if(passengers.length * fare > req.user.balance) {
+    if (passengers.length * fare > req.user.balance) {
         req.body.err_msg = 'Insufficient balance in your account';
         req.body.balance = req.user.balance;
         res.render('booking_form', req.body);
