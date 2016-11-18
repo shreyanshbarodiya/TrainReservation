@@ -17,7 +17,7 @@ block content
                                 th From
                                 th To
                                 th Date of Journey
-                                th Reservation Status
+
                         tbody
                             - var i=0
                             form(id='booked-form',role='form')
@@ -32,7 +32,6 @@ block content
                                         td #{ticket.boarding_pt}
                                         td #{ticket.destination}
                                         td #{ticket.date_of_journey.getDate()}/#{ticket.date_of_journey.getUTCMonth() + 1}/#{ticket.date_of_journey.getFullYear()}
-                                        td Booked
 
                     div
                         button.btn.btn-danger#cancel_pnr_btn(form='booked-form',formaction='/pnr',formmethod='post',type='submit',name="cancel",value="Cancel") Cancel
