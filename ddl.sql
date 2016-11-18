@@ -107,6 +107,8 @@ create table travels_in
 	 seat_no				integer check (seat_no > 0),
 	 status					varchar(3) check (status in ('WL','CNF','CAN')),
 	 waitlist_no			integer,
+	 booking_status         varchar(3) check (status in ('WL','CNF')),
+	 booking_waitlist_no    integer,
 	 preference				varchar(20) check (preference in ('Lower','Middle','Upper','Side Lower','Side Upper')),
 	 primary key (PNR,p_id,train_no,coach_id),
 	 foreign key (PNR,p_id) references passenger(PNR,p_id) on delete cascade,
