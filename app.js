@@ -47,55 +47,60 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.use('local-login', new LocalStrategy(
-	{
-		usernameField: 'username',
-		passwordField: 'password',
-		passReqToCallback: true
-	},
-	function (req, username, password, done) {
-		models.User.findByPrimary(username).then(function (user) {
-			if (!user)
-				return done(null, false, {message: "Incorrect username"});
-			if (!passwordHash.verify(password, user.password))
-				return done(null, false, {message: "Incorrect password"});
+    {
+        usernameField: 'username',
+        passwordField: 'password',
+        passReqToCallback: true
+    },
+    function (req, username, password, done) {
+        models.User.findByPrimary(username).then(function (user) {
+            if (!user)
+                return done(null, false, {message: "Incorrect username"});
+            if (!passwordHash.verify(password, user.password))
+                return done(null, false, {message: "Incorrect password"});
 
-			return done(null, {username : user.username, name: user.name, balance: user.balance});
-		})
-	}
+            return done(null, {username: user.username, name: user.name, balance: user.balance});
+        }).catch(function (error) {
+            return done(null, false, {message: "Internal Server Error: " + error.message});
+        })
+    }
 ));
 
 passport.use('local-signup', new LocalStrategy(
-	{
-		usernameField: 'username',
-		passwordField: 'password',
-		passReqToCallback: true
-	},
-	function (req, username, password, done) {
-		models.User.findOrCreate({
-			where: {username: username},
-			defaults: {
-				name: req.body.firstname + ' ' + req.body.lastname,
-				password: passwordHash.generate(password),
-				ph_no: req.body.mobile,
-				balance: 0
-			}
-		})
-			.spread(function (user, created) {
-				if (created) {
-					return done(null, {username : user.username, name: user.name, balance: user.balance});
-				}
-				else
-					return done(null, false, {message: "This username is taken"});
-			})
-	}
+    {
+        usernameField: 'username',
+        passwordField: 'password',
+        passReqToCallback: true
+    },
+    function (req, username, password, done) {
+        models.User.findOrCreate({
+            where: {username: username},
+            defaults: {
+                name: req.body.firstname + ' ' + req.body.lastname,
+                password: passwordHash.generate(password),
+                ph_no: req.body.mobile,
+                balance: 0
+            }
+        })
+            .spread(function (user, created) {
+                if (created) {
+                    return done(null, {username: user.username, name: user.name, balance: user.balance});
+                }
+                else
+                    return done(null, false, {message: "This username is taken"});
+            })
+            .catch(function (error) {
+                return done(null, false, {message: "Internal Server Error: " + error.message});
+            })
+    }
 ));
 
 passport.serializeUser(function (user, done) {
-	done(null, user);
+    done(null, user);
 });
 
 passport.deserializeUser(function (user, done) {
-	done(null, user);
+    done(null, user);
 });
 
 /* All public routes */
@@ -115,18 +120,18 @@ app.use('/station', station);
 app.use('/wallet', wallet);
 app.use('/cancel', cancel);
 app.use('/booked_history', booked_history);
-app.use('/booking_form',booking_form);
+app.use('/booking_form', booking_form);
 
 app.get('/logout', function (req, res) {
-	req.logOut();
-	res.redirect('/login');
+    req.logOut();
+    res.redirect('/login');
 });
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-	var err = new Error('Not Found');
-	err.status = 404;
-	next(err);
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handlers
@@ -134,30 +139,30 @@ app.use(function (req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-	app.use(function (err, req, res) {
-		res.status(err.status || 500);
-		res.render('error', {
-			message: err.message,
-			error: err
-		});
-	});
+    app.use(function (err, req, res) {
+        res.status(err.status || 500);
+        res.render('error', {
+            message: err.message,
+            error: err
+        });
+    });
 }
 
 // production error handler
 // no stacktraces leaked to user
 app.use(function (err, req, res) {
-	res.status(err.status || 500);
-	res.render('error', {
-		message: err.message,
-		error: {}
-	});
+    res.status(err.status || 500);
+    res.render('error', {
+        message: err.message,
+        error: {}
+    });
 });
 
 function ensureAuthenticated(req, res, next) {
-	if (req.isAuthenticated())
-		return next();
-	else
-		res.render('login', {title: "Login"});
+    if (req.isAuthenticated())
+        return next();
+    else
+        res.render('login', {title: "Login"});
 }
 
 module.exports = app;

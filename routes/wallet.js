@@ -13,7 +13,12 @@ router.post('/credit', function (req, res) {
         user.save()
             .then(function (savedUser) {
                 res.json({status: 'SUCCESS', data: savedUser.balance});
-                models.Transaction.create({txn_id: Date.now(), username: req.user.username, credit: credit, debit: null});
+                models.Transaction.create({
+                    txn_id: Date.now(),
+                    username: req.user.username,
+                    credit: credit,
+                    debit: null
+                });
                 req.login(user, function (error) {
                     if (!error) {
                         console.log('successfully updated user');
@@ -24,6 +29,8 @@ router.post('/credit', function (req, res) {
             .catch(function (error) {
                 res.json({status: 'ERROR', data: error});
             })
+    }).catch(function (error) {
+        res.json({status: 'ERROR', data: error});
     });
 });
 
