@@ -1,0 +1,58 @@
+//
+   Created by shreyansh on 18/11/16.
+
+extends layout
+
+block content
+    div.mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#traindetails(style='margin-top:40px;')
+        .panel.panel-info
+            .panel-heading
+                div.panel-title Journey details
+            div.panel-body(style="padding-top:15px")
+                div.col-md-4 Train no./name : 12345
+                div.col-md-4 Journey date : 12-12-2016
+                div.col-md-4 Class : SL
+                div.col-md-4 From station : BCT
+                div.col-md-4 To Station : NGP
+
+    div.mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#passengerdetails(style='margin-top:40px;')
+        .panel.panel-info
+            .panel-heading
+                div.panel-title Passenger details
+            div.panel-body(style="padding-top:5px")
+                - var i=1
+                - var j;
+                form#passenger_form(role='form', action='/book_ticket', method='post')
+                    table.table
+                        thead
+                            tr
+                                th.col-md-1 S.No.
+                                th.col-md-5 Name
+                                th.col-md-1 Age
+                                th.col-md-2 Gender
+                                th.col-md-3 Preference
+                        tbody
+                            - for(i=1; i<=6;i++)
+                                tr
+                                    td.col-md-1 #{i}
+                                    td.col-md-5
+                                        - j = "name"+ i
+                                        input.form-control(type="text",name=j )
+                                    td.col-md-1
+                                        - j = "age" + i
+                                         input.form-control(type="number",min="1",max="100", name=j,value=1)
+                                    td.col-md-2
+                                        - j = "gender" + i
+                                        select.form-control(name=j)
+                                            option M
+                                            option F
+                                    td.col-md-3
+                                        - j = "preference" + i
+                                        select.form-control(name=j)
+                                            option LOWER
+                                            option MIDDLE
+                                            option UPPER
+                                            option SIDE LOWER
+                                            option SIDE UPPER
+
+                    button.btn.btn-success.pull-right(id='btn_book',type='submit',form='passenger_form',value='Submit') Book Now
