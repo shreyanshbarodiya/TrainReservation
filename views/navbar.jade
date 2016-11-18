@@ -1,0 +1,58 @@
+extends layout
+
+append head
+    link(rel="stylesheet", href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")
+    script(src="https://code.jquery.com/jquery-1.12.4.js")
+    script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
+    script(src="/js/autocomplete.js")
+    script(src="/js/availability.js")
+    script.
+        $(function () {
+            $("#add-money-form").submit(function (e) {
+                var url = "/wallet/credit"; // the script where you handle the form input.
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: $("#add-money-form").serialize()
+                }) // serializes the form's elements.
+                        .success(function (data) {
+                            alert('Successfully added amount to wallet!');
+                            $('#balance').html("&nbsp; &#x20B9; " + data.data);
+                        })
+                        .error(function (error, status) {
+                            alert('Failed to add money!');
+                        })
+                        .then(function () {
+                            $('#close-modal').trigger('click');
+                        });
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+            });
+        });
+
+append navbar-contents
+    ul.nav.navbar-nav.navbar-right
+        li
+            a(href="#",data-toggle="modal",data-target="#add-money-modal")
+                span.glyphicon.glyphicon-piggy-bank
+                text#balance &nbsp; &#x20B9; #{balance}
+        li
+            a(href="logout")
+                span.glyphicon.glyphicon-log-in
+                text &nbsp Logout
+
+        //Modal for add money to wallet
+        .modal.fade#add-money-modal(role="dialog")
+          .modal-dialog
+            .modal-content
+              .modal-header
+                button#close-modal(type="button", class="close", data-dismiss="modal") &times;
+                h4.modal-title Add Money to Wallet
+              .modal-body
+                form(id='add-money-form',class='form-inline',role='form',action='#')
+                  div.form-group
+                    label(for="add-amt") Enter amount(&#x20B9;):
+                    input.form-control(type="number",id='add-amt', name="add_amt", placeholder="Amount", required, min=1)
+                  button.btn.btn-primary#btn-add-money Submit
+              .modal-footer
+                button(type="button", class="btn btn-default", data-dismiss="modal") Close
+
