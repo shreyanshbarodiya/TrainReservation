@@ -1,27 +1,6 @@
-//
-   Created by shreyansh on 4/11/16.
+extends navbar
 
-extends layout
-
-append head
-    link(rel="stylesheet", href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")
-    script(src="https://code.jquery.com/jquery-1.12.4.js")
-    script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
-    script(src="/js/autocomplete.js")
-    script(src="/js/availability.js")
-
-append navbar-contents
-    ul.nav.navbar-nav.navbar-right
-        li
-            a(href="#",data-toggle="modal",data-target="#add-money-modal")
-                span.glyphicon.glyphicon-piggy-bank
-                text#balance &nbsp; &#x20B9; #{balance}
-        li
-            a(href="logout")
-                span.glyphicon.glyphicon-log-in
-                text &nbsp Logout
-
-block content
+append content
     .container-fluid
         .row
             block search-box
@@ -53,32 +32,35 @@ block content
                         div.col-lg-6#availability_results(style="padding-left:0;text-align:center;")
                         div.col-lg-6#fare_results(style="padding-left:0;text-align:center;")
                     div.mainbox#search_train_results
-                        div
-                            table.table.table-hover
-                                thead
-                                    tr
-                                        th S.No.
-                                        th Train No.
-                                        th Train Name
-                                        th Departure
-                                        th Arrival
-                                        th Day of Week
-                                        th Coaches
-
-                                tbody
-                                    - var i=0
-                                    for train in search_result
-                                        - i++;
+                        if search_results.length
+                            div
+                                table.table.table-hover
+                                    thead
                                         tr
-                                            td #{i}
-                                            td
-                                                a(href="#", onClick="window.open('/schedule/"+train.train_no+"','MyWindow','width=450,height=600');return false") #{train.train_no}
-                                            td #{train.name}
-                                            td #{train.departure_time}
-                                            td #{train.arrival_time}
-                                            td
-                                                for day in train.day_of_week
-                                                    text #{day} &nbsp;
-                                            td
-                                                for coach in train.coach_class
-                                                   a(href="javascript:getAvailability('"+train.train_no+"','"+coach+"','"+search_from+"','"+search_to+"','"+train.doj+"','"+search_date+"')" style='padding-left: 7px') #{coach}
+                                            th S.No.
+                                            th Train No.
+                                            th Train Name
+                                            th Departure
+                                            th Arrival
+                                            th Day of Week
+                                            th Coaches
+
+                                    tbody
+                                        - var i=0
+                                            for train in search_result
+                                                - i++;
+                                                tr
+                                                    td #{i}
+                                                    td
+                                                        a(href="#", onClick="window.open('/schedule/"+train.train_no+"','MyWindow','width=450,height=600');return false") #{train.train_no}
+                                                    td #{train.name}
+                                                    td #{train.departure_time}
+                                                    td #{train.arrival_time}
+                                                    td
+                                                        for day in train.day_of_week
+                                                            text #{day} &nbsp;
+                                                    td
+                                                        for coach in train.coach_class
+                                                           a(href="javascript:getAvailability('"+train.train_no+"','"+coach+"','"+search_from+"','"+search_to+"','"+train.doj+"','"+search_date+"')" style='padding-left: 7px') #{coach}
+                        else
+                            h3(style="color:red;") No trains to display!!

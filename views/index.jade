@@ -1,43 +1,4 @@
-extends layout
-
-append head
-  link(rel="stylesheet", href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")
-  script(src="https://code.jquery.com/jquery-1.12.4.js")
-  script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
-  script(src="/js/autocomplete.js")
-  script.
-    $ (function () {
-      $("#add-money-form").submit(function (e) {
-        var url = "/wallet/credit"; // the script where you handle the form input.
-        $.ajax({
-          type: "POST",
-          url: url,
-          data: $("#add-money-form").serialize()}) // serializes the form's elements.
-                .success( function (data) {
-                  alert('Successfully added amount to wallet!');
-                  $('#balance').html("&nbsp; &#x20B9; " + data.data);
-                })
-                .error(function (error, status) {
-                  alert('Failed to add money!');
-                })
-              .then(function () {
-                $('#close-modal').trigger('click');
-              });
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-      });
-    });
-
-
-append navbar-contents
-      ul.nav.navbar-nav.navbar-right
-        li
-          a(href="#",data-toggle="modal",data-target="#add-money-modal")
-            span.glyphicon.glyphicon-piggy-bank
-            text#balance &nbsp; &#x20B9; #{balance}
-        li
-          a(href="logout")
-            span.glyphicon.glyphicon-log-in
-            text &nbsp Logout
+extends navbar
 
 block content
   .container-fluid
@@ -52,15 +13,15 @@ block content
               div.form-group
                 label.col-md-3.control-label(for="search-from") From Station
                 .col-md-9
-                  input.form-control(type="text",id='search-from', name="search_from", placeholder="From")
+                  input.form-control(type="text",id='search-from', name="search_from", placeholder="From",required)
               div.form-group
                 label.col-md-3.control-label(for="search-to") To Station
                 .col-md-9
-                  input.form-control(type="text",id='search-to', name="search_to", placeholder="To")
+                  input.form-control(type="text",id='search-to', name="search_to", placeholder="To", required)
               div.form-group
                 label.col-md-3.control-label(for="search-date") Journey Date
                 .col-md-9
-                  input.form-control(type="date",id='search-date', name="search_date")
+                  input.form-control(type="date",id='search-date', name="search_date", required)
               div.form-group
                 .col-md-offset-3.col-md-9
                   button.btn.btn-primary#btn-search Search
@@ -82,19 +43,3 @@ block content
             td
               a(href='#',data-toggle="modal",data-target="#add-money-modal")
                 h3 Add money to wallet
-
-    //Modal for add money to wallet
-    .modal.fade#add-money-modal(role="dialog")
-      .modal-dialog
-        .modal-content
-          .modal-header
-            button#close-modal(type="button", class="close", data-dismiss="modal") &times;
-            h4.modal-title Add Money to Wallet
-          .modal-body
-            form(id='add-money-form',class='form-inline',role='form',action='#')
-              div.form-group
-                label(for="add-amt") Enter amount(&#x20B9;):
-                input.form-control(type="number",id='add-amt', name="add_amt", placeholder="Amount")
-              button.btn.btn-primary#btn-add-money Submit
-          .modal-footer
-            button(type="button", class="btn btn-default", data-dismiss="modal") Close
