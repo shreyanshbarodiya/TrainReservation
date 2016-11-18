@@ -34,10 +34,10 @@ block content
                 div.col-md-3#fare
                 div.col-md-3#avail
 
-    .mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#divalert
+    .mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#errorbox
         div.panel-body
             if locals.err_msg && locals.err_msg != ''
-                div.alert.alert-danger.col-sm-12#booking-alert
+                div.alert.alert-danger.col-sm-12#error-alert
                     p= err_msg
 
     div.mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#passengerdetails(style='margin-top:20px;')
@@ -81,11 +81,11 @@ block content
                                     td.col-md-3
                                         - j = "preference" + i
                                         select.form-control(name=j)
-                                            option LOWER
-                                            option MIDDLE
-                                            option UPPER
-                                            option SIDE LOWER
-                                            option SIDE UPPER
-                                            option(selected) NO PREFERENCE
+                                            option Lower
+                                            option Middle
+                                            option Upper
+                                            option Side Lower
+                                            option Side Upper
+                                            option(selected) No Preference
 
                     button.btn.btn-success.pull-right(id='btn_book',type='submit',form='passenger_form',value='Submit') Book Now
