@@ -21,7 +21,8 @@ router.get('/:train_no/:coach_class/:from/:to/:journeydate/:boardingdate', funct
             from : from,
             to : to,
             journey_date : journey_date,
-            boarding_date : boarding_date
+            boarding_date : boarding_date,
+            balance : req.user.balance
         });
 });
 module.exports = router;
