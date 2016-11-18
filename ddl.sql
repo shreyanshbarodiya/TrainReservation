@@ -91,7 +91,7 @@ create table ticket
 
 create table passenger
 	(PNR					numeric(10,0),
-	 p_id					numeric(5,0),
+	 p_id					numeric(5),
 	 name					varchar(100),
 	 age					integer,
 	 gender					varchar(20) check (gender in ('Male','Female')),
@@ -101,7 +101,7 @@ create table passenger
 
 create table travels_in
 	(PNR					numeric(10,0),
-	 p_id					numeric(5,0),
+	 p_id					numeric(5),
 	 train_no				varchar(5),
 	 coach_id				varchar(5),
 	 seat_no				integer check (seat_no > 0),
@@ -109,7 +109,7 @@ create table travels_in
 	 waitlist_no			integer default 0,
 	 booking_status         varchar(3) check (booking_status in ('WL','CNF')),
 	 booking_waitlist_no    integer default 0,
-	 preference				varchar(20) check (preference in ('Lower','Middle','Upper','Side Lower','Side Upper')),
+	 preference				varchar(20) check (preference in ('Lower','Middle','Upper','Side Lower','Side Upper','No Preference')),
 	 primary key (PNR,p_id,train_no,coach_id),
 	 foreign key (PNR,p_id) references passenger(PNR,p_id) on delete cascade,
 	 foreign key (train_no,coach_id) references coach(train_no,coach_id) on delete cascade

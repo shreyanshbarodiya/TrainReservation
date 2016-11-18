@@ -87,7 +87,7 @@ router.post('/', function (req, res) {
             }).catch(function (err) {
                 res.render('PNR', {
                     title: "PNR Enquiry",
-                    status: err.message
+                    status: "Internal Server Error: " + err.message
                 });
             });
         }
@@ -103,7 +103,7 @@ router.post('/', function (req, res) {
     }).catch(function (err) {
         res.render('PNR', {
             title: "PNR Enquiry",
-            status: err.message
+            status: "Internal Server Error: " + err.message
         });
     });
 });
