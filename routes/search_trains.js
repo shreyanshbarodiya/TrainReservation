@@ -138,7 +138,7 @@ router.post('/availability', function (req, res) {
             else {
                 availability = 'WL' + parseInt(availability)*-1;
             }
-            var response = {availability: availability, fare: '&#x20B9; '+getFare(distance, postData.coach_class).toFixed(2)};
+            var response = {availability: availability, fare: getFare(distance, postData.coach_class).toFixed(2)};
             res.send(response);
         }
     })

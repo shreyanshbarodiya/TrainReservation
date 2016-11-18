@@ -14,7 +14,7 @@ function getAvailability(train_no, coach_class, from, to, date, dob) {
         }).done(function (data, status) {
         availResult += data.availability;
         availResult += '</p><a href="/booking_form/'+train_no+'/'+coach_class+'/'+from+'/'+to+'/'+date+'/'+dob+'">Book now</a>';
-        fareResult += data.fare;
+        fareResult += '&#x20B9;'+data.fare;
         fareResult += "</div></div>";
         $('#fare_results').html(fareResult);
     }).fail(function () {

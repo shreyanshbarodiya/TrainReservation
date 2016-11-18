@@ -2,20 +2,45 @@
    Created by shreyansh on 18/11/16.
 
 extends navbar
-
+append head
+    script.
+        $(function () {
+            console.log('ready');
+            $.post("/search_trains/availability",
+                    {
+                        train_no: '#{train_no}',
+                        coach_class: '#{coach_class}',
+                        from: '#{from}',
+                        to: '#{to}',
+                        date: '#{journey_date}'
+                    }).done(function (data, status) {
+                    $('#fare').html('Fare : &#x20B9;'+data.fare);
+                    $('#fare-form').val(data.fare);
+                    $('#avail').html('Current Availability : '+data.availability);
+            })
+        });
 block content
     div.mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#traindetails(style='margin-top:40px;')
         .panel.panel-info
             .panel-heading
                 div.panel-title Journey details
             div.panel-body(style="padding-top:15px")
-                div.col-md-4 Train no. : #{train_no}
-                div.col-md-4 Boarding date : #{boarding_date}
-                div.col-md-4 Class : #{coach_class}
-                div.col-md-4 From station : #{from}
-                div.col-md-4 To Station : #{to}
+                div.col-md-3 Train no. : #{train_no}
+                div.col-md-3 Boarding date : #{boarding_date}
+                div.col-md-3 Class : #{coach_class}
+                div.col-md-3
+                div.col-md-3 From station : #{from}
+                div.col-md-3 To Station : #{to}
+                div.col-md-3#fare
+                div.col-md-3#avail
 
-    div.mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#passengerdetails(style='margin-top:40px;')
+    .mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#traindetails
+        div.panel-body
+            if locals.err_msg && locals.err_msg != ''
+                div.alert.alert-danger.col-sm-12#login-alert
+                    p= err_msg
+
+    div.mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#passengerdetails(style='margin-top:20px;')
         .panel.panel-info
             .panel-heading
                 div.panel-title Passenger details
@@ -23,6 +48,13 @@ block content
                 - var i=1
                 - var j;
                 form#passenger_form(role='form', action='/book_ticket', method='post')
+                    input(type='hidden',name='train_no',value=train_no)
+                    input(type='hidden',name='coach_class',value=coach_class)
+                    input(type='hidden',name='journey_date',value=journey_date)
+                    input(type='hidden',name='boarding_date',value=boarding_date)
+                    input(type='hidden',name='from',value=from)
+                    input(type='hidden',name='to',value=to)
+                    input(type='hidden',name='fare',id="fare-form")
                     table.table
                         thead
                             tr
@@ -40,7 +72,7 @@ block content
                                         input.form-control(type="text",name=j )
                                     td.col-md-1
                                         - j = "age" + i
-                                         input.form-control(type="number",min="7",max="100", name=j,value=1)
+                                         input.form-control(type="number",min="7",max="100", name=j,value=7)
                                     td.col-md-2
                                         - j = "gender" + i
                                         select.form-control(name=j)
@@ -54,6 +86,6 @@ block content
                                             option UPPER
                                             option SIDE LOWER
                                             option SIDE UPPER
-                                            option NO PREFERENCE
+                                            option(selected) NO PREFERENCE
 
                     button.btn.btn-success.pull-right(id='btn_book',type='submit',form='passenger_form',value='Submit') Book Now

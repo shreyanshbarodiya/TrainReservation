@@ -25,6 +25,7 @@ var booked_history = require('./routes/booked_history');
 var schedule = require('./routes/schedule');
 var cancel = require('./routes/cancel');
 var booking_form = require('./routes/booking_form');
+var book_ticket = require('./routes/book_ticket');
 
 var app = express();
 
@@ -116,6 +117,7 @@ app.use('/wallet', wallet);
 app.use('/cancel', cancel);
 app.use('/booked_history', booked_history);
 app.use('/booking_form',booking_form);
+app.use('/book_ticket',book_ticket);
 
 app.get('/logout', function (req, res) {
 	req.logOut();
