@@ -1,5 +1,36 @@
 extends layout
 
+append head
+    script.
+        function getCheckboxValues() {
+            var checked =  $(":checked").toArray();
+            var pids = [];
+            for (var i = 0; i < checked.length; i++){
+                pids.push(checked[i]["name"]);
+            }
+            return pids;
+        }
+
+        $(function () {
+            $("#cancel-form").submit(function (event) {
+                event.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/cancel",
+                    data: $(this).serialize() + '&p_id=' + getCheckboxValues().toString()
+                })
+                    .success(function (data) {
+                        if (data.status == 'SUCCESS')
+                            alert('Successfully cancelled ' + data.data + ' ticket(s)');
+                        else
+                            alert('Failed to process request.');
+                    })
+                    .error(function (error) {
+                        alert('Internal Server Error');
+                    });
+            });
+        });
+
 block content
     div
         table.table.table-bordered
@@ -62,50 +93,16 @@ block content
                                             td #{passenger.gender}
                                             td #{passenger.preference}
                                             td WL/19
-                                            td #{passenger.coach_id} #{passenger.seat_no}
+                                            if passenger.status == 'CAN'
+                                                td Cancelled
+                                            else
+                                                td #{passenger.coach_id} #{passenger.seat_no}
                                             if locals.cancel && locals.cancel != ''
                                                 td
-                                                    input.form-control(type="checkbox",id='cancel_pid', name="p_id",value= passenger.p_id)
+                                                    input.form-control.cancel_pid(type="checkbox", name="#{passenger.p_id}" )
 
-                        div
-                            button.btn.btn-danger#cancel_btn(form='cancel-form',formaction='/cancel',formmethod='post',type='submit') Cancel
-
-
-//
-   Created by ankur on 10/25/2016.
-
-    with pnr_data_1 as (select distinct pnr,train_no,date_of_journey,boarding_pt,destination from ticket where pnr=?),
-         pnr_data_2 as (select pnr,train_no,train_name,date_of_journey,boarding_pt,destination from pnr_data_1 natural join train)
-    select pnr,train_no,train_name,'class',date_of_journey,boarding_pt,destination
-    from pnr_data_2 natural join travels_in natural join coach;
-
-    WITH pnr_data_1 AS (SELECT DISTINCT
-                          pnr,
-                          train_no,
-                          date_of_journey,
-                          boarding_pt,
-                          destination
-                        FROM ticket
-                        WHERE pnr = 1234567890),
-        pnr_data_2 AS (SELECT
-                         pnr,
-                         train_no,
-                         name,
-                         date_of_journey,
-                         boarding_pt,
-                         destination
-                       FROM pnr_data_1
-                         NATURAL JOIN train)
-    SELECT *
-    FROM pnr_data_2
-      NATURAL JOIN travels_in ;
-
-    with pnr_status_1 as (select pnr,p_id,preference,status,coach_id,seat_no,waitlist_no from travels_in where pnr=?)
-    select name,age,gender,preference,status,coach_id,seat_no,waitlist_no
-    from pnr_status_1 natural join passenger;
-
-    with pnr_data_1 as (select pnr,train_no,date_of_journey,boarding_pt,destination from ticket where pnr='1234567890'),
-        pnr_data_2 as (select pnr,train_no,name,date_of_journey,boarding_pt,destination from pnr_data_1 natural join train)
-        select distinct pnr_data_2.pnr,pnr_data_2.train_no,pnr_data_2.name,coach.coach_class,pnr_data_2.date_of_journey,pnr_data_2.boarding_pt,pnr_data_2.destination from pnr_data_2,travels_in,coach where pnr_data_2.train_no=travels_in.train_no and travels_in.coach_id=coach.coach_id;
+                        if locals.cancel && locals.cancel != ''
+                            div
+                                button.btn.btn-danger#cancel_btn(form='cancel-form',type='submit') Cancel
 
 
