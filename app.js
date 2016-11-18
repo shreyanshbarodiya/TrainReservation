@@ -7,12 +7,10 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var path = require('path');
-
 var LocalStrategy = require('passport-local').Strategy;
 var passwordHash = require('password-hash');
 
 var models = require('./models');
-
 var routes = require('./routes/index');
 var pnr = require('./routes/pnr');
 var pnr_enquiry = require('./routes/pnr_enquiry');
@@ -33,7 +31,6 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -42,7 +39,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // set up passport
-app.use(session({secret: 'dgfshdfghjdsvjsdvhvgjbvs', resave: false, saveUninitialized: true}));
+app.use(session({secret: '4i6XUv7GI183FLTkl9h7zYCaZe9Gb70w', resave: false, saveUninitialized: true}));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());

@@ -70,7 +70,7 @@ block content
                     td #{j}
 
     .container
-        div.mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#loginbox(style='margin-top:50px;')
+        div.mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#pnrbox(style='margin-top:50px;')
             .panel.panel-info
                 .panel-heading
                     div.panel-title PNR Status
@@ -101,7 +101,10 @@ block content
                                             td #{passenger.age}
                                             td #{passenger.gender}
                                             td #{passenger.preference}
-                                            td WL/19
+                                            if passenger.booking_status == 'WL'
+                                                td WL/#{passenger.booking_waitlist_no}
+                                            else
+                                                td #{passenger.coach_id}/#{passenger.seat_no}
                                             if passenger.status == 'CAN'
                                                 td Cancelled
                                             else

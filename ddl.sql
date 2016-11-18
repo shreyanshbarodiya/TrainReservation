@@ -77,7 +77,7 @@ create table ticket
 	 destination			varchar(5),
 	 train_no				varchar(5),
 	 username				varchar(100),
-	 txn_id					numeric(12,0),
+	 txn_id					numeric(15,0),
 	 date_of_boarding       date,
 	 primary key (PNR),
 	 foreign key (train_no) references train(train_no) on delete cascade,
