@@ -26,10 +26,6 @@ function getFare(distance, coach_class) {
         return fareRate[0]*50 + fareRate[1]*100 + fareRate[2]*(distance-150);
 }
 
-router.get('/', function (req, res){
-    res.render('search_trains', {title: "Search Trains"});
-});
-
 var dayOfWeek = ['Su', 'M', 'Tu', 'W', 'Th', 'F', 'Sa'];
 
 router.post('/',function(req,res){
