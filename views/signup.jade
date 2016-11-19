@@ -30,7 +30,7 @@ block content
                         div.form-group
                             label.col-md-3.control-label(for="signup-mobile") Mobile No.
                             .col-md-9
-                                input.form-control(type="tel",id='signup-mobile', name="mobile", placeholder="Mobile No.", required=true)
+                                input.form-control(type="number",id='signup-mobile', name="mobile", placeholder="Mobile No.", required=true, min="1000000000",max="9999999999")
                         div.form-group
                             label.col-md-3.control-label(for="signup-password") Password
                             .col-md-9
