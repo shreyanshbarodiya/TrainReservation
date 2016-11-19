@@ -112,6 +112,8 @@ block content
                                             if locals.cancel && locals.cancel != '' && passenger.status != 'CAN'
                                                 td
                                                     input.form-control.cancel_pid(type="checkbox", name="#{passenger.p_id}" )
+                                            else
+                                                td
 
                         if locals.cancel && locals.cancel != ''
                             div

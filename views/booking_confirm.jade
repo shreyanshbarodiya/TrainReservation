@@ -11,35 +11,37 @@ block content
                 div.col-md-4 Train no. : #{req.train_no}
                 div.col-md-4 Boarding date : #{req.boarding_date}
                 div.col-md-4 Class : #{req.coach_class}
-                div.col-md-3 From station : #{req.from}
-                div.col-md-3 To Station : #{req.to}
-                div.col-md-3 Fare : #{req.fare}
+                div.col-md-4 From station : #{req.from}
+                div.col-md-4 To Station : #{req.to}
+                div.col-md-4 Fare : #{req.fare}
 
     div.mainbox.col-md-10.col-md-offset-1.col-sm-10.col-sm-offset-1#passengerdetails(style='margin-top:20px;')
         .panel.panel-info
             .panel-heading
                 div.panel-title Passenger details
-                    table.table
-                        thead
+            div.panel-body(style="padding-top:15px")
+                table.table
+                    thead
+                        tr
+                            th.col-md-1 S.No.
+                            th.col-md-5 Name
+                            th.col-md-1 Age
+                            th.col-md-2 Gender
+                            th.col-md-3 Status
+                            th.col-md-2 Seat/Waitlist
+                    tbody
+                        - var i=1
+                        - for passenger in passengers
                             tr
-                                th.col-md-1 S.No.
-                                th.col-md-5 Name
-                                th.col-md-1 Age
-                                th.col-md-2 Gender
-                                th.col-md-3 Status
-                                th.col-md-2 Seat/Waitlist
-                        tbody
-                            - var i=1
-                            - for passenger in passengers
-                                tr
-                                    td #{i}
-                                    - i++
-                                    td #{passenger.name}
-                                    td #{passenger.age}
-                                    td #{passenger.gender}
-                                    td #{passenger.status}
-                                    td #{passenger.coach_id}/#{passenger.seat_no}
+                                td #{i}
+                                - i++
+                                td #{passenger.name}
+                                td #{passenger.age}
+                                td #{passenger.gender}
+                                td #{passenger.status}
+                                td #{passenger.coach_id}/#{passenger.seat_no}
     button.btn.btn-info(onclick='window.print()')
-        span.glyphicon.glyphicon-print
-        a Print
+        span
+            i.glyphicon.glyphicon-print
+        a &nbsp;&nbspPrint
 
