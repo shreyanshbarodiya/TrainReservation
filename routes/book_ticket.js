@@ -161,7 +161,7 @@ router.post('/', function (req, res) {
 
             result = resultList;
             txn_id = Date.now();
-            pnr = Math.round(Math.random() * 10000000000);
+            pnr = Math.round(Math.random() * 9000000000 + 1000000000);
 
             return models.Transaction.create({
                 txn_id: txn_id,
