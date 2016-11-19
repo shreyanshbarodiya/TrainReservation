@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var models = require('../models');
+var seq = models.sequelize;
 
 router.get('/', function (req, res) {
     models.Ticket.findAll({
@@ -25,10 +26,57 @@ router.post('/', function (req, res) {
     var pnr = parseInt(req.body.pnr, 10);
     var numCancelled, status, data;
 
+    var get_cancelled_records_query = "SELECT PNR,train_no, date_of_journey, coach_id, seat_no, coach_class " +
+        "FROM ticket NATURAL JOIN travels_in NATURAL JOIN coach " +
+        "WHERE pnr = :pnr AND p_id in :p_id;";
+    var shift_waitlist_query = "UPDATE travels_in SET waitlist_no=waitlist_no-:i " +
+        "WHERE train_no=:train_no and date_of_journey=:doj and status='WL' and coach_id in (SELECT coach_id FROM coach WHERE train_no=:train_no and coach_class=:coach_class)"
+    var assign_seat_query = "UPDATE travels_in SET seat_no=:seat_no, coach_id=:coach_id, status = 'CNF', waitlist_no=0 " +
+        "WHERE train_no=:train_no and date_of_journey=:doj and waitlist_no=:i and coach_id in (SELECT coach_id FROM coach WHERE train_no=:train_no and coach_class=:coach_class);";
+    seq.query(get_cancelled_records_query, {
+        replacements: {
+            pnr:pnr,
+            p_id:p_id
+        }
+    }).then( function (data) {
+        var wait_clear_count = 1;
+        var ticket;
+        for (var i = 0; i < data[0].length; i++) {
+            ticket = data[0][i];
+            if (ticket.seat_no != 0) {
+                seq.query(assign_seat_query, {
+                    replacements: {
+                        train_no: ticket.train_no,
+                        doj: ticket.date_of_journey,
+                        i: wait_clear_count,
+                        seat_no: ticket.seat_no,
+                        coach_id: ticket.coach_id
+                    }
+                }).then(function (affectedCount) {
+                    if(affectedCount > 0)
+                        wait_clear_count++;
+                });
+            }
+        }
+        return {
+            train_no: ticket.train_no,
+            doj: ticket.date_of_journey,
+            i: wait_clear_count,
+            pnr: ticket.pnr
+        };
+    }).then(function (params) {
+        seq.query(shift_waitlist_query, {
+            replacements: {
+                train_no:params.train_no,
+                doj:params.date_of_journey,
+                i:params.wait_clear_count
+            }
+        });
+    });
+
     models.Travels_in.update({status: 'CAN'}, {
         where: {pnr: pnr, p_id: req.body.p_id}
-    })
-        .spread(function (affectedCount) {
+    }).spread(function (affectedCount) {
             numCancelled = affectedCount;
             return models.Ticket.findByPrimary(pnr)
         })
@@ -64,7 +112,6 @@ router.post('/', function (req, res) {
         .catch(function (err) {
             res.json({status: 'ERROR', data: err.message});
         });
-
 });
 
 module.exports = router;
