@@ -34,11 +34,11 @@ router.post('/', function (req, res) {
         req.body.err_msg = 'Insufficient balance in your account';
         res.render('booking_form', req.body);
     }
-    ////////////////////////////////////////////////////////////////////
+
     var trainDetails = req.body;
     var passengerList = passengers;
     var resultList;
-    var flag = false;
+
     var pref_seat = {
         "Lower": [1, 4], "Middle": [2, 5], "Upper": [3, 6], "Side Upper": [0],
         "Side Lower": [7], "No Preference": [0, 1, 2, 3, 4, 5, 6, 7]
@@ -128,7 +128,6 @@ router.post('/', function (req, res) {
                 }
             }
 
-
             if (data.length == 0) {
                 var waitlist_no = 1;
             } else {
@@ -156,9 +155,6 @@ router.post('/', function (req, res) {
             }
         }
 
-
-////////////////////////////////////////////////////////////////////
-//var result = getSeat(req.body, passengers);
         result = resultList;
         txn_id = Date.now();
         pnr = Math.round(Math.random() * 10000000000);
