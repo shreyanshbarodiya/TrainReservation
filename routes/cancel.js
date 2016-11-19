@@ -28,29 +28,38 @@ router.post('/', function (req, res) {
 
     var get_cancelled_records_query = "SELECT PNR,train_no, date_of_journey, coach_id, seat_no, coach_class " +
         "FROM ticket NATURAL JOIN travels_in NATURAL JOIN coach " +
-        "WHERE pnr = :pnr AND p_id in :p_id;";
+        "WHERE pnr = :pnr AND p_id in (:p_id);";
     var shift_waitlist_query = "UPDATE travels_in SET waitlist_no=waitlist_no-:i " +
-        "WHERE train_no=:train_no and date_of_journey=:doj and status='WL' and coach_id in (SELECT coach_id FROM coach WHERE train_no=:train_no and coach_class=:coach_class)"
+        "WHERE train_no=:train_no and " +
+        "pnr in (SELECT pnr FROM ticket WHERE train_no=:train_no and date_of_journey=:doj) " +
+        "and status='WL' and " +
+        "coach_id in (SELECT coach_id FROM coach WHERE train_no=:train_no and coach_class=:coach_class)"
     var assign_seat_query = "UPDATE travels_in SET seat_no=:seat_no, coach_id=:coach_id, status = 'CNF', waitlist_no=0 " +
-        "WHERE train_no=:train_no and date_of_journey=:doj and waitlist_no=:i and coach_id in (SELECT coach_id FROM coach WHERE train_no=:train_no and coach_class=:coach_class);";
+        "WHERE train_no=:train_no and " +
+        "pnr in (SELECT pnr FROM ticket WHERE train_no=:train_no and date_of_journey=:doj) and " +
+        "waitlist_no=:i and coach_id in (SELECT coach_id FROM coach WHERE train_no=:train_no and coach_class=:coach_class);";
     seq.query(get_cancelled_records_query, {
         replacements: {
             pnr:pnr,
-            p_id:p_id
+            p_id:req.body.p_id
         }
     }).then( function (data) {
+        console.log('Cancelled data:'+data[0]);
         var wait_clear_count = 1;
         var ticket;
         for (var i = 0; i < data[0].length; i++) {
             ticket = data[0][i];
+            var doj = new Date(ticket.date_of_journey);
+            doj = doj.getFullYear()+'-'+(doj.getUTCMonth()+1)+'-'+doj.getDate();
             if (ticket.seat_no != 0) {
                 seq.query(assign_seat_query, {
                     replacements: {
                         train_no: ticket.train_no,
-                        doj: ticket.date_of_journey,
+                        doj: doj,
                         i: wait_clear_count,
                         seat_no: ticket.seat_no,
-                        coach_id: ticket.coach_id
+                        coach_id: ticket.coach_id,
+                        coach_class: ticket.coach_class
                     }
                 }).then(function (affectedCount) {
                     if(affectedCount > 0)
@@ -60,16 +69,18 @@ router.post('/', function (req, res) {
         }
         return {
             train_no: ticket.train_no,
-            doj: ticket.date_of_journey,
+            doj: doj,
             i: wait_clear_count,
-            pnr: ticket.pnr
+            pnr: ticket.pnr,
+            coach_class: ticket.coach_class
         };
     }).then(function (params) {
         seq.query(shift_waitlist_query, {
             replacements: {
                 train_no:params.train_no,
-                doj:params.date_of_journey,
-                i:params.wait_clear_count
+                doj:params.doj,
+                i:params.i,
+                coach_class:params.coach_class
             }
         });
     });
@@ -77,13 +88,14 @@ router.post('/', function (req, res) {
     models.Travels_in.update({status: 'CAN'}, {
         where: {pnr: pnr, p_id: req.body.p_id}
     }).spread(function (affectedCount) {
-            numCancelled = affectedCount;
-            return models.Ticket.findByPrimary(pnr)
-        })
+        numCancelled = affectedCount;
+        return models.Ticket.findByPrimary(pnr)
+    })
         .then(function (ticket) {
             return models.Transaction.findByPrimary(ticket.txn_id)
         })
         .then(function (txn) {
+            console.log(req.body.p_id.length+','+req.body.total_num);
             return models.Transaction.create({
                 txn_id: Date.now(),
                 username: req.user.username,
