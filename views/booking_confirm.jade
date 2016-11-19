@@ -41,7 +41,10 @@ block content
                                 td #{passenger.age}
                                 td #{passenger.gender}
                                 td #{passenger.status}
-                                td #{passenger.coach_id}/#{passenger.seat_no}
+                                if passenger.status== 'CNF'
+                                    td #{passenger.coach_id}/#{passenger.seat_no}
+                                else
+                                    td WL/#{passenger.waitlist_no}
     button.btn.btn-info(onclick='window.print()')
         span
             i.glyphicon.glyphicon-print

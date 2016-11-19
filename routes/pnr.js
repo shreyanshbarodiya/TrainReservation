@@ -44,8 +44,8 @@ router.post('/', function (req, res) {
         'FROM pnr_data_2, travels_in, coach ' +
         'WHERE pnr_data_2.train_no = travels_in.train_no AND travels_in.coach_id = coach.coach_id;';
 
-    var query_passenger = "with pnr_status_1 as (select pnr,p_id,preference,status,coach_id,seat_no,waitlist_no from travels_in where pnr=:pnr)" +
-        " select p_id, name,age,gender,preference,status,coach_id,seat_no,waitlist_no " +
+    var query_passenger = "with pnr_status_1 as (select pnr,p_id,preference,status,coach_id,seat_no,waitlist_no,booking_status,booking_waitlist_no from travels_in where pnr=:pnr)" +
+        " select p_id, name,age,gender,preference,status,coach_id,seat_no,waitlist_no,booking_status,booking_waitlist_no " +
         "from pnr_status_1 natural join passenger;";
 
     seq.query(query_common,
