@@ -26,6 +26,12 @@ router.post('/', function (req, res) {
     var pnr = parseInt(req.body.pnr, 10);
     var numCancelled, status, data;
 
+    if (!(req.body.p_id.constructor === Array)){
+        var pid = req.body.p_id;
+        req.body.p_id = [];
+        req.body.p_id.push(pid);
+    }
+
     var get_cancelled_records_query = "SELECT PNR,train_no, date_of_journey, coach_id, seat_no, coach_class " +
         "FROM ticket NATURAL JOIN travels_in NATURAL JOIN coach " +
         "WHERE pnr = :pnr AND p_id in :p_id;";
@@ -75,7 +81,7 @@ router.post('/', function (req, res) {
     });
 
     models.Travels_in.update({status: 'CAN'}, {
-        where: {pnr: pnr, p_id: req.body.p_id}
+        where: {pnr: pnr, p_id: {$in : req.body.p_id}}
     }).spread(function (affectedCount) {
             numCancelled = affectedCount;
             return models.Ticket.findByPrimary(pnr)
@@ -84,10 +90,11 @@ router.post('/', function (req, res) {
             return models.Transaction.findByPrimary(ticket.txn_id)
         })
         .then(function (txn) {
+            console.log(txn.debit, req.body.p_id, req.body.total_num);
             return models.Transaction.create({
                 txn_id: Date.now(),
                 username: req.user.username,
-                credit: txn.debit * req.body.p_id.length / req.body.total_num,
+                credit: txn.debit * req.body.p_id.length / parseInt(req.body.total_num),
                 debit: null
             })
         })
