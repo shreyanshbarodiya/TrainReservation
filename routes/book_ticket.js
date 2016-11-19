@@ -212,6 +212,7 @@ router.post('/', function (req, res) {
             res.render('booking_confirm', {
                 title: 'Booking Confirmation',
                 passengers: result,
+                pnr: pnr,
                 req: req.body,
                 balance: req.user.balance
             });
