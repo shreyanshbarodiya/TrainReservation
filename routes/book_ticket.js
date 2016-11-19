@@ -163,6 +163,7 @@ router.post('/', function (req, res) {
             txn_id = Date.now();
             pnr = Math.round(Math.random() * 9000000000 + 1000000000);
 
+            req.body.fare = fare * passengers.length;
             return models.Transaction.create({
                 txn_id: txn_id,
                 username: req.user.username,
@@ -209,6 +210,7 @@ router.post('/', function (req, res) {
             })
         })
         .then(function () {
+
             res.render('booking_confirm', {
                 title: 'Booking Confirmation',
                 passengers: result,

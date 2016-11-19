@@ -36,7 +36,7 @@ router.post('/', function (req, res) {
     seq.query(get_cancelled_records_query, {
         replacements: {
             pnr:pnr,
-            p_id:p_id
+            p_id:req.body.p_id
         }
     }).then( function (data) {
         var wait_clear_count = 1;

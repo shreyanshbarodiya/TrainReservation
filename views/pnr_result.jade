@@ -112,10 +112,10 @@ block content
                                                 td #{passenger.coach_id}/#{passenger.seat_no}
                                             else
                                                 td WL/#{passenger.waitlist_no}
-                                            if locals.cancel && locals.cancel != '' && passenger.status != 'CAN'
+                                            if locals.cancel && locals.cancel != '' && passenger.status != 'CAN' && passenger.status != 'WL'
                                                 td
                                                     input.form-control.cancel_pid(type="checkbox", name="p_id", value="#{passenger.p_id}" )
-                                            else if j != cancelled
+                                            else if locals.cancel && locals.cancel != '' && j != cancelled
                                                 td
 
                         if locals.cancel && locals.cancel != ''

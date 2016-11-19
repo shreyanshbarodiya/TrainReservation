@@ -5,9 +5,10 @@ var express = require('express');
 var router = express.Router();
 
 var models = require('../models');
+var seq = models.sequelize;
 
 router.get('/', function (req, res) {
-    res.render('PNR', {title: "PNR Enquiry"});
+    res.render('PNR', {title: "PNR Enquiry", public: true});
 });
 
 router.post('/', function (req, res) {
