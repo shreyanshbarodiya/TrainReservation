@@ -21,8 +21,9 @@ router.get('/', function (req, res) {
 });
 
 router.post('/', function (req, res) {
+    var user = req.user;
     var pnr = parseInt(req.body.pnr, 10);
-    var numCancelled;
+    var numCancelled, status, data;
 
     models.Travels_in.update({status: 'CAN'}, {
         where: {pnr: pnr, p_id: req.body.p_id}
@@ -38,22 +39,27 @@ router.post('/', function (req, res) {
             return models.Transaction.create({
                 txn_id: Date.now(),
                 username: req.user.username,
-                credit: txn.debit,
+                credit: txn.debit * req.body.p_id.length / req.body.total_num,
                 debit: null
             })
         })
         .then(function (credit_txn) {
-            req.user.balance = req.user.balance + parseInt(credit_txn.credit);
-            return models.User.update({balance: req.user.balance}, {where: {username: req.user.username}})
+            user.balance = user.balance + parseInt(credit_txn.credit);
+            return models.User.update({balance: user.balance}, {where: {username: req.user.username}})
         })
         .then(function () {
-            req.login(req.user, function (error) {
-                if (error)
-                    res.json({status: 'ERROR', data: "Could not update cached user"});
-                else
-                    res.json({status: 'SUCCESS', data: numCancelled});
-                res.end();
+            req.login(user, function (error) {
+                if (error) {
+                    status = 'ERROR';
+                    data = error;
+                }
+                else {
+                    status = 'SUCCESS';
+                    data = numCancelled;
+                }
             });
+            res.json({status: status, data: data});
+            res.end();
         })
         .catch(function (err) {
             res.json({status: 'ERROR', data: err.message});

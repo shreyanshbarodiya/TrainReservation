@@ -21,7 +21,7 @@ append head
                     $.ajax({
                         type: "POST",
                         url: "/cancel",
-                        data: $(this).serialize() + '&p_id=' + getCheckboxValues().toString()
+                        data: $(this).serialize()
                     })
                         .done(function (data) {
                             if (data.status == 'SUCCESS') {
@@ -93,6 +93,7 @@ block content
                                 - var i=0
                                 form(id='cancel-form',role='form')
                                     input.form-control(type="hidden", id="cancel_pnr", name="pnr", value= pnr_data[0].pnr )
+                                    input.form-control(type="hidden", id="cancel_total_num", name="total_num", value= j)
                                     for passenger in passenger_data
                                         - i++;
                                         tr
@@ -111,7 +112,7 @@ block content
                                                 td #{passenger.coach_id}/#{passenger.seat_no}
                                             if locals.cancel && locals.cancel != '' && passenger.status != 'CAN'
                                                 td
-                                                    input.form-control.cancel_pid(type="checkbox", name="#{passenger.p_id}" )
+                                                    input.form-control.cancel_pid(type="checkbox", name="p_id", value="#{passenger.p_id}" )
                                             else if j != cancelled
                                                 td
 
