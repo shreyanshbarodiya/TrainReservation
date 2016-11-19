@@ -10,7 +10,11 @@ block content
                     if locals.status && locals.status != ''
                         div.alert.alert-danger.col-sm-12#error-alert
                             p= status
-                    form(id='pnr-form',class='form-horizontal',role='form', action='/pnr', method='post')
+                    if locals.public
+                        - var action = '/pnr_enquiry';
+                    else
+                        - var action = '/pnr';
+                    form(id='pnr-form',class='form-horizontal',role='form', action="#{action}", method='post')
                         div.input-group(style="margin-bottom: 25px")
                             span.input-group-addon
                                 i.glyphicon.glyphicon-list-alt

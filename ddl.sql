@@ -104,7 +104,7 @@ create table travels_in
 	 p_id					numeric(5,0),
 	 train_no				varchar(5),
 	 coach_id				varchar(5),
-	 seat_no				integer check (seat_no > 0),
+	 seat_no				integer check (seat_no >= 0),
 	 status					varchar(3) check (status in ('WL','CNF','CAN')),
 	 waitlist_no			integer default 0,
 	 booking_status         varchar(3) check (booking_status in ('WL','CNF')),
