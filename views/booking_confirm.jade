@@ -29,9 +29,11 @@ block content
                                 th.col-md-3 Status
                                 th.col-md-2 Seat/Waitlist
                         tbody
-                            - for passenger,i in passengers
+                            - var i=1
+                            - for passenger in passengers
                                 tr
                                     td #{i}
+                                    - i++
                                     td #{passenger.name}
                                     td #{passenger.age}
                                     td #{passenger.gender}
